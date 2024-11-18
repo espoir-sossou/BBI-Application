@@ -1,0 +1,44 @@
+
+        form input {
+            border: 1px solid #ccc; /* Bordure */
+            border-radius: 5px; /* Bord arrondi */
+            padding: 10px; /* Espacement intérieur */
+            margin-bottom: 10px; /* Marge en bas pour l'espacement entre les champs */
+        }
+        .custom-file-upload {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fd7e14; /* Couleur de fond */
+            color: white; /* Couleur du texte */
+            border: 1px solid #fd7e14; /* Bordure */
+            border-radius: 20px; /* Coins arrondis */
+            padding: 10px 20px; /* Espacement interne */
+            cursor: pointer;
+        }
+
+        /* Style de survol pour le bouton */
+        #fileInput:hover + .button {
+            background-color: #ff9933; /* Couleur de fond au survol */
+            border: 1px solid #ff9933; /* Bordure au survol */
+        }
+
+        .circle-background {
+            width: 30px; /* Ajustez la taille du cercle selon vos besoins */
+            height: 30px;
+            background-color: #fd7e14;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }

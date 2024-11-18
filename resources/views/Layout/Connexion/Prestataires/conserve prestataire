@@ -1,0 +1,396 @@
+// controlleur
+
+<?php
+
+namespace App\Http\Controllers\Backend\Auberges;
+
+use App\Models\Pay;
+use App\Models\Client;
+use App\Models\Specialite;
+use App\Models\HotelIncOne;
+use App\Models\HotelIncTwo;
+use App\Models\Prestataire;
+use Illuminate\Http\Request;
+use App\Mail\VerificationCodeMail;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Backend\Auberges\aubergeController;
+
+class aubergeController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return view('Layout.Auberges.index');
+    }
+
+    public function apartement()
+    {
+        return view('Layout.Auberges.apartement');
+    }
+
+    public function galery()
+    {
+        return view('Layout.Auberges.galery');
+    }
+
+    public function vlog()
+    {
+        return view('Layout.Auberges.vlog');
+    }
+
+    public function vlog_details()
+    {
+        return view('Layout.Auberges.vlog_details');
+    }
+
+
+    public function ch_privee()
+    {
+        return view('Layout.Auberges.Categories.ch_privee');
+    }
+
+    public function ch_partagee()
+    {
+        return view('Layout.Auberges.Categories.ch_partagee');
+    }
+
+    public function aub_charme()
+    {
+        return view('Layout.Auberges.Categories.aub_charme');
+    }
+
+    public function eco()
+    {
+        return view('Layout.Auberges.Categories.eco');
+    }
+
+    public function sign_up()
+    {
+        $specialites = Specialite::all();
+        return view('Layout.Connexion.Prestataires.sign_up', compact('specialites'));
+    }
+    public function specialite()
+    {
+
+        return view('Layout.Backend.Specialite.specialite');
+    }
+    public function sign_in()
+    {
+
+        return view('Layout.Connexion.Prestataires.sign_in');
+    }
+    public function client_sign_up()
+    {
+
+        return view('Layout.Connexion.Clients.sign_up');
+    }
+    public function post_client_sign_up(Request $request){
+        $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'email' => 'required|email|unique:prestataires',
+            'phone' => 'required',
+            'password' => 'required|min:5|max:10',
+        ]);
+
+
+
+// INSERER LES BONNES
+
+$clients = new Client;
+
+$clients->firstname = $request ->firstname;
+$clients->lastname = $request ->lastname;
+$clients->email = $request ->email;
+$clients->phone = $request ->phone;
+$clients->password = bcrypt($request->password);
+
+$save = $clients->save();
+
+if($save){
+    return back()->with('success', 'Compte crée avec succes');
+}else{
+    return back()->with('fail', 'Echec de creation de compte');
+}
+
+
+    }
+    public function client_sign_in()
+    {
+
+        return view('Layout.Connexion.Clients.sign_in');
+    }
+    public function post_client_ign_in(Request $request){
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:5|max:10',
+        ]);
+
+        $prestataireInfo = Prestataire::where('email','=',$request ->email)->first();
+
+if(!$prestataireInfo){
+    return redirect()->route('client_mail_verif');
+}else{
+    if(Hash::check($request->password, $prestataireInfo->password)){
+        $request->session()->put('LoggedUser', $prestataireInfo->id);
+        return redirect()->route('option_inc');
+
+    }else{
+        return back()->with('fail', 'mot de passe incorrect');
+    }
+
+}
+
+
+    }
+
+
+    public function post_specialite(Request $request){
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+// INSERER LES BONNES
+
+$specialites = new Specialite;
+
+$specialites->name = $request ->name;
+
+$save = $specialites->save();
+
+if($save){
+    return back()->with('success', 'Specialite enregistrer avec succes');
+}else{
+    return back()->with('fail', 'EchSpecialiter non enregistrer');
+}
+
+
+    }
+
+    public function mail_verif()
+    {
+        return view('Layout.Connexion.Clients.mail_verif');
+    }
+    public function option_inc()
+    {
+
+        return view('Layout.Dashboard.option_inc');
+    }
+    public function hotel_inc()
+    {
+        $pays = Pay::orderBy('name')->get();
+
+        return view('Layout.Dashboard.hotel_inc', compact('pays'));
+    }
+    public function post_hotel_inc(Request $request){
+        $request->validate([
+            'pays' => 'required',
+            'adresse' => 'required',
+            'num_unit' => 'required',
+            'ville' => 'required',
+            'etat' => 'required',
+            'code_postale' => 'required|min:5|max:10',
+        ]);
+
+
+
+// INSERER LES BONNES
+
+$HotelIncOnes = new HotelIncOne;
+
+$HotelIncOnes->pays = $request->pays;
+$HotelIncOnes->adresse = $request->adresse;
+$HotelIncOnes->num_unit = $request->num_unit;
+$HotelIncOnes->ville = $request->ville;
+$HotelIncOnes->etat = $request->etat;
+$HotelIncOnes->code_postale = $request->code_postale;
+
+
+
+$save = $HotelIncOnes->save();
+
+if($save){
+    return redirect()->route('hotel_inc2');
+}else{
+    return back()->with('fail', 'Echec de creation de compte');
+}
+
+
+    }
+    public function hotel_inc2()
+    {
+        $pays = Pay::orderBy('name')->get();
+
+        return view('Layout.Dashboard.hotel_inc2', compact('pays'));
+    }
+    public function post_hotel_inc2(Request $request){
+        $request->validate([
+            'telephone' => 'required',
+        ]);
+
+
+
+// INSERER LES BONNES
+
+$HotelIncTwos = new HotelIncTwo;
+
+$HotelIncTwos->telephone = $request->telephone;
+
+$save = $HotelIncTwos->save();
+
+if($save){
+    return back()->with('success', 'Compte crée avec succes');
+}else{
+    return back()->with('fail', 'Echec de creation de compte');
+}
+
+
+    }
+    public function auberge_inc()
+    {
+
+        return view('Layout.Dashboard.auberge_inc');
+    }
+    public function choix_inc()
+    {
+
+        return view('Layout.Dashboard.choix_inc');
+    }
+    public function post_register_pays(Request $request){
+        $request->validate([
+            'nom_pays' => 'required',
+        ]);
+
+// INSERER LES BONNES
+
+$pays = new Pay;
+
+$pays->name = $request ->nom_pays;
+
+$save = $pays->save();
+
+if($save){
+    return back()->with('success', 'Specialite enregistrer avec succes');
+}else{
+    return back()->with('fail', 'EchSpecialiter non enregistrer');
+}
+
+
+    }
+
+
+
+    public function post_sign_up(Request $request){
+        $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'email' => 'required|email|unique:prestataires',
+            'phone' => 'required',
+            'jobtitle' => 'required',
+            'password' => 'required|min:5|max:10',
+            'passwordConfirmation' => 'required',
+        ]);
+
+        // Générez un code de vérification à 6 chiffres
+    $verificationCode = strval(mt_rand(100000, 999999));
+
+// Sauvegardez le code dans la base de données
+$prestataire = new Prestataire;
+
+$prestataire->firstname = $request->firstname;
+$prestataire->lastname = $request->lastname;
+$prestataire->email = $request->email;
+$prestataire->phone = $request->phone;
+$prestataire->jobtitle = $request->jobtitle;
+$prestataire->password = bcrypt($request->password);
+$prestataire->passwordConfirmation = $request->passwordConfirmation;
+
+$prestataire->code_verif = $verificationCode;
+$save = $prestataire->save();
+// Envoyez le code par e-mail
+Mail::to($prestataire->email)->send(new VerificationCodeMail($verificationCode));
+
+return redirect()->route('prestataire_mail_verif');
+
+
+    }
+
+
+     public function post_sign_in(Request $request){
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:5|max:10',
+        ]);
+
+        $prestataireInfo = Prestataire::where('email','=',$request ->email)->first();
+
+if(!$prestataireInfo){
+    return back()->with('fail', 'email incorrect');
+}else{
+    if(Hash::check($request->password, $prestataireInfo->password) && $request->code_verif == $prestataireInfo->code_verif){
+        $request->session()->put('LoggedUser', $prestataireInfo->id);
+        return redirect()->route('option_inc');
+
+    }else{
+        return back()->with('fail', 'mot de passe incorrect');
+    }
+
+}
+
+
+    }
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}
+
+
+
