@@ -132,12 +132,12 @@
                                         <a href="property-details.html">{{ $annonce->titre }}</a>
                                     </h4>
                                     <ul>
-                                        <li>Chambres : <span>{{ $annonce->nbChambres }}</span></li>
+                                        <li>nbr Chambres : <span>{{ $annonce->nbChambres }}</span></li>
                                         <li>Salles de bain : <span>{{ $annonce->nbSalleDeDouche }}</span></li>
                                         <li>Superficie : <span>{{ $annonce->superficie }} m²</span></li>
                                         <li>Parking : <span>{{ $annonce->garage ? '1' : '0' }}</span></li>
-                                        <li>Chambres : <span>{{ $annonce->nbChambres }}</span></li>
-                                        <li>Nb chambr : <span>{{ $annonce->nbChambres }}</span></li>
+                                        <li>nbr Salle de douche : <span>{{ $annonce->nbChambres }}</span></li>
+                                        <li>titre foncier : <span>{{$annonce->garage ? 'Oui' : 'Non'  }}</span></li>
                                         <li>Chambres : <span>{{ $annonce->nbChambres }}</span></li>
                                         <li>Garage : <span>{{ $annonce->garage ? 'Oui' : 'Non' }}</span></li>
                                         <li>Piscine : <span>{{ $annonce->piscine ? 'Oui' : 'Non' }}</span></li>
