@@ -94,9 +94,9 @@
 
                                         <td>{{ $OffreEnVedette->validee ? 'Oui' : 'Non' }}</td>
                                         <td class="text-right">  <!-- Aligner les boutons à droite -->
-                                             
+
                                             <!-- Formulaire pour Supprimer -->
-                                            <form action="{{ route('admin.offreEnVedette.destroy', $OffreEnVedette->offre_en_vedettes_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
+                                            <form action="{{ route('offreEnVedette.destroy', $OffreEnVedette->offre_en_vedettes_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">
