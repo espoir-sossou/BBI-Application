@@ -81,7 +81,7 @@ return [
             'level' => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,
         ],
-
+/*
         'papertrail' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
@@ -93,7 +93,7 @@ return [
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],
-
+*/
         'stderr' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
