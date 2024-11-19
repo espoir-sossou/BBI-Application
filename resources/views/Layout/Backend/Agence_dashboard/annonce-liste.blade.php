@@ -77,7 +77,7 @@
                                         <td>{{ $annonce->dependance ? 'Oui' : 'Non' }}</td>
                                         <td>{{ $annonce->piscine ? 'Oui' : 'Non' }}</td>
                                         <td>{{ $annonce->garage ? 'Oui' : 'Non' }}</td>
-                                        <td>{{ $annonce->titreFoncier ? 'Oui' : 'Non' }}</td> 
+                                        <td>{{ $annonce->titreFoncier ? 'Oui' : 'Non' }}</td>
                                         <td>{{ $annonce->localite }}</td>
                                         <td>{{ $annonce->localisation }}</td>
                                         <td>{{ $annonce->details }}</td>
