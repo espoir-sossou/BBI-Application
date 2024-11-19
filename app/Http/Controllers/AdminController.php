@@ -58,7 +58,7 @@ class AdminController extends Controller
     public function adminOffreEnVedetteListe()
     {
         $OffreEnVedette = OffreEnVedette::all(); // Récupérer toutes les OffreEnVedette
-        return view('Layout.Backend.Agence_dashboard.Offre_en_vedette.annonce-liste', compact('OffreEnVedette'));
+        return view('Layout.Backend.Admin_dashboard.Offre_en_vedette.annonce-liste', compact('OffreEnVedette'));
     }
     public function adminOffreEnVedetteValidader($id, Request $request)
     {

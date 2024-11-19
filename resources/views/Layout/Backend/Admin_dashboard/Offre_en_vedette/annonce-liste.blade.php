@@ -86,21 +86,48 @@
                                         <td>{{ $OffreEnVedette->video }}</td>
                                         <td>
                                             @if ($OffreEnVedette->image)
-                                            <img src="{{ asset('storage/' . $OffreEnVedette->image) }}" alt="Image Annonce" width="50">
+                                                <img src="{{ asset('storage/' . $OffreEnVedette->image) }}"
+                                                    alt="Image Annonce" width="50">
                                             @else
                                                 Aucun
                                             @endif
                                         </td>
 
                                         <td>{{ $OffreEnVedette->validee ? 'Oui' : 'Non' }}</td>
-                                        <td class="text-right">  <!-- Aligner les boutons à droite -->
-                                             
+                                        <td class="text-right">
+                                            <!-- Formulaire pour Valider / Annuler la validation -->
+                                            @if ($OffreEnVedette->validee)
+                                                <form
+                                                    action="{{ route('admin.OffreEnVedette.valider', $OffreEnVedette->offre_en_vedettes_id) }}"
+                                                    method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('POST')
+                                                    <input type="hidden" name="action" value="unvalidate">
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fa fa-check-circle"></i> <!-- Icone de validation -->
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form
+                                                    action="{{ route('admin.OffreEnVedette.valider', $OffreEnVedette->offre_en_vedettes_id) }}"
+                                                    method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('POST')
+                                                    <input type="hidden" name="action" value="validate">
+                                                    <button type="submit" class="btn btn-warning btn-sm">
+                                                        <i class="fa fa-times-circle"></i> <!-- Icone pour annuler -->
+                                                    </button>
+                                                </form>
+                                            @endif
                                             <!-- Formulaire pour Supprimer -->
-                                            <form action="{{ route('admin.offreEnVedette.destroy', $OffreEnVedette->offre_en_vedettes_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
+                                            <form
+                                                action="{{ route('admin.offreEnVedette.destroy', $OffreEnVedette->offre_en_vedettes_id) }}"
+                                                method="POST" style="display:inline;"
+                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fa fa-trash"></i>  <!-- Icone de suppression -->
+                                                    <i class="fa fa-trash"></i> <!-- Icone de suppression -->
                                                 </button>
                                             </form>
                                         </td>
