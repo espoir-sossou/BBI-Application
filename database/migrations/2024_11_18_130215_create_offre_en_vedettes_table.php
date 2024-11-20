@@ -14,27 +14,27 @@ return new class extends Migration
         Schema::create('offre_en_vedettes', function (Blueprint $table) {
             $table->id('offre_en_vedettes_id');
             $table->string('titre');
-            $table->text('description');
+            $table->text('description')->nullable(); // Champ optionnel
             $table->string('typePropriete');
             $table->float('montant');
-            $table->float('superficie');
-            $table->integer('nbChambres');
-            $table->integer('nbSalleDeDouche');
-            $table->integer('veranda');
-            $table->integer('terrasse');
-            $table->integer('cuisine');
-            $table->integer('dependance');
-            $table->integer('piscine');
-            $table->integer('garage');
-            $table->integer('titreFoncier');
+            $table->float('superficie')->nullable(); // Champ optionnel
+            $table->integer('nbChambres')->nullable(); // Champ optionnel
+            $table->integer('nbSalleDeDouche')->nullable(); // Champ optionnel
+            $table->integer('veranda')->default(0); // Champ avec valeur par défaut
+            $table->integer('terrasse')->default(0); // Champ avec valeur par défaut
+            $table->integer('cuisine')->default(0); // Champ avec valeur par défaut
+            $table->integer('dependance')->default(0); // Champ avec valeur par défaut
+            $table->integer('piscine')->default(0); // Champ avec valeur par défaut
+            $table->integer('garage')->default(0); // Champ avec valeur par défaut
+            $table->integer('titreFoncier')->nullable(); // Champ optionnel
             $table->string('localite');
-            $table->string('localisation');
-            $table->text('details')->nullable();
+            $table->string('localisation')->nullable(); // Champ optionnel
+            $table->text('details')->nullable(); // Champ optionnel
             $table->string('typeTransaction');
-            $table->string('visite360')->nullable();
+            $table->string('visite360')->nullable(); // Champ optionnel
             $table->dateTime('dateCreation')->default(now());
             $table->boolean('validee')->default(false);
-            $table->string('video')->nullable();
+            $table->string('video')->nullable(); // Champ optionnel
             $table->string('image');
 
             // Colonnes pour les IDs des utilisateurs

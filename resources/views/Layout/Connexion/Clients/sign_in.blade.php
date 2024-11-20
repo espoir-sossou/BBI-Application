@@ -83,7 +83,7 @@
 
                                 <!-- Bouton Se connecter avec Google -->
                                 <div class="text-center">
-                                    <a href="{{ route('googleLogin') }}" class="btn btn-outline-primary"
+                                    <a href="#" class="btn btn-outline-primary"
                                         style="font-size: 18px; padding: 10px 20px; color: #318093; border-color: #318093;">
                                         <img src="Frontend/Home/assets/imgs/google.png" alt="Google"
                                             style="width: 30px; height: auto; margin-right: 10px;"> Se connecter avec Google

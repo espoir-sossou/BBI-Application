@@ -1,32 +1,47 @@
 @extends('Layout.home')
 
 @section('content')
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" style="height: 50vh;">
+        <div class="carousel-inner h-100">
+            @foreach ($offresEnVedette as $index => $offre)
+                <div class="carousel-item h-100 {{ $index === 0 ? 'active' : '' }}">
+                    @if ($offre->image)
+                        <img src="{{ asset('storage/' . $offre->image) }}" class="d-block w-100 h-100"
+                            style="object-fit: cover; transition: opacity 1s ease-in-out;" alt="Image de l'offre en vedette">
+                    @else
+                        <img src="Frontend/Home/assets/imgs/default.jpg" class="d-block w-100 h-100"
+                            style="object-fit: cover; transition: opacity 1s ease-in-out;" alt="Image par défaut">
+                    @endif
+                    <!-- Titre sur l'image avec ombre -->
+                    <div class="text-on-image"
+                        style="
+position: absolute;
+top: 10%;
+left: 10px;
+z-index: 10;
+background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent noir */
+color: white;
+padding: 5px 10px; /* Espace autour du texte */
+border-radius: 5px; /* Coins arrondis pour un style moderne */
+">
+                        <h5 style="margin: 0; color: white">{{ $offre->titre ?? 'Titre par défaut' }}</h5>
+                    </div>
 
-<div id="carouselExample" class="carousel slide" data-bs-ride="carousel" style="height: 50vh;">
-    <div class="carousel-inner h-100">
-        @foreach ($offresEnVedette as $index => $offre)
-            <div class="carousel-item h-100 {{ $index === 0 ? 'active' : '' }}">
-                @if ($offre->image)
-                    <img src="{{ asset('storage/' . $offre->image) }}" class="d-block w-100 h-100"
-                        style="object-fit: cover; transition: opacity 1s ease-in-out;" alt="Image de l'offre en vedette">
-                @else
-                    <img src="Frontend/Home/assets/imgs/default.jpg" class="d-block w-100 h-100"
-                        style="object-fit: cover; transition: opacity 1s ease-in-out;" alt="Image par défaut">
-                @endif
-            </div>
-        @endforeach
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Contrôles précédent et suivant -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Précédent</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Suivant</span>
+        </button>
     </div>
 
-    <!-- Contrôles précédent et suivant -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Précédent</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Suivant</span>
-    </button>
-</div>
 
     <div class="row" style="position: relative; top:-60px">
         <div class="col-lg-12">
@@ -124,10 +139,19 @@
                             <div class="col-lg-4 col-md-6 align-self-center mb-30 properties-items">
                                 <div class="item">
                                     <a href="property-details.html">
-                                        <img src="{{ asset('storage/' . $annonce->image) }}" alt="Image Annonce" style="max-width: 400px;">
+                                        <img src="{{ asset('storage/' . $annonce->image) }}" alt="Image Annonce"
+                                            style="max-width: 400px;">
                                     </a>
-                                    <span class="category">{{ $annonce->typeTransaction }}</span>
-                                    <h6>{{ number_format($annonce->montant, 0, ',', ' ') }} XOF</h6>
+                                    <span class="category"
+                                    style="
+                                    background-color: {{ $annonce->typeTransaction === 'A louer' ? 'green' : ($annonce->typeTransaction === 'A vendre' ? '#17a2b8' : 'transparent') }};
+                                    color: white;
+                                    padding: 5px 10px;
+                                    border-radius: 5px;
+                                    font-size: 14px;
+                                    display: inline-block;">
+                                    {{ $annonce->typeTransaction }}
+                                </span>                                     <h6>{{ number_format($annonce->montant, 0, ',', ' ') }} XOF</h6>
                                     <h4>
                                         <a href="property-details.html">{{ $annonce->titre }}</a>
                                     </h4>
@@ -137,7 +161,7 @@
                                         <li>Superficie : <span>{{ $annonce->superficie }} m²</span></li>
                                         <li>Parking : <span>{{ $annonce->garage ? '1' : '0' }}</span></li>
                                         <li>nbr Salle de douche : <span>{{ $annonce->nbChambres }}</span></li>
-                                        <li>titre foncier : <span>{{$annonce->garage ? 'Oui' : 'Non'  }}</span></li>
+                                        <li>titre foncier : <span>{{ $annonce->garage ? 'Oui' : 'Non' }}</span></li>
                                         <li>Chambres : <span>{{ $annonce->nbChambres }}</span></li>
                                         <li>Garage : <span>{{ $annonce->garage ? 'Oui' : 'Non' }}</span></li>
                                         <li>Piscine : <span>{{ $annonce->piscine ? 'Oui' : 'Non' }}</span></li>

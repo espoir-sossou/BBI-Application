@@ -51,21 +51,21 @@ class AgenceController extends Controller
         // Validation des données de l'annonce
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
-            'description' => 'required|string|min:10',
+            'description' => 'nullable|string',
             'montant' => 'required|numeric|min:0',
             'typePropriete' => 'required|string|max:255',
-            'superficie' => 'required|numeric|min:0',
-            'nbChambres' => 'required|integer|min:0',
-            'nbSalleDeDouche' => 'required|integer|min:0',
-            'veranda' => 'required|integer|min:0',
-            'terrasse' => 'required|integer|min:0',
-            'cuisine' => 'required|integer|min:0',
-            'dependance' => 'required|integer|min:0',
-            'piscine' => 'required|integer|min:0',
-            'garage' => 'required|integer|min:0',
-            'titreFoncier' => 'required|integer|min:0',
+            'superficie' => 'nullable|numeric|min:0',
+            'nbChambres' => 'nullable|integer|min:0',
+            'nbSalleDeDouche' => 'nullable|integer|min:0',
+            'veranda' => 'nullable|integer|min:0',
+            'terrasse' => 'nullable|integer|min:0',
+            'cuisine' => 'nullable|integer|min:0',
+            'dependance' => 'nullable|integer|min:0',
+            'piscine' => 'nullable|integer|min:0',
+            'garage' => 'nullable|integer|min:0',
+            'titreFoncier' => 'nullable|integer|min:0',
             'localite' => 'required|string|max:255',
-            'localisation' => 'required|string|max:255',
+            'localisation' => 'nullable|string|max:255',
             'details' => 'nullable|string',
             'typeTransaction' => 'required|string',
             'visite360' => 'nullable|string|max:255',
@@ -78,8 +78,17 @@ class AgenceController extends Controller
             $validatedData['image'] = $request->file('image')->store('annonces', 'public');
         }
 
+        // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
+        $validatedData['veranda'] = $validatedData['veranda'] ?? 0;
+        $validatedData['terrasse'] = $validatedData['terrasse'] ?? 0;
+        $validatedData['cuisine'] = $validatedData['cuisine'] ?? 0;
+        $validatedData['dependance'] = $validatedData['dependance'] ?? 0;
+        $validatedData['piscine'] = $validatedData['piscine'] ?? 0;
+        $validatedData['garage'] = $validatedData['garage'] ?? 0;
+        $validatedData['titreFoncier'] = $validatedData['titreFoncier'] ?? 0;
+
         // Trouver l'admin dont le rôle est 'ADMIN' dans la table users
-        $admin = User::where('role', 'ADMIN')->first(); // On récupère le premier admin trouvé
+        $admin = User::where('role', 'ADMIN')->first();
 
         // Vérifier s'il existe un admin dans la base de données
         if (!$admin) {
@@ -89,15 +98,15 @@ class AgenceController extends Controller
         // Enregistrer la date de création
         $validatedData['dateCreation'] = now();
 
-        // Création de l'annonce avec tous les champs
+        // Création de l'annonce avec les données validées
         $annonce = new Annonce();
         $annonce->titre = $validatedData['titre'];
-        $annonce->description = $validatedData['description'];
+        $annonce->description = $validatedData['description'] ?? null;
         $annonce->montant = $validatedData['montant'];
         $annonce->typePropriete = $validatedData['typePropriete'];
-        $annonce->superficie = $validatedData['superficie'];
-        $annonce->nbChambres = $validatedData['nbChambres'];
-        $annonce->nbSalleDeDouche = $validatedData['nbSalleDeDouche'];
+        $annonce->superficie = $validatedData['superficie'] ?? null;
+        $annonce->nbChambres = $validatedData['nbChambres'] ?? null;
+        $annonce->nbSalleDeDouche = $validatedData['nbSalleDeDouche'] ?? null;
         $annonce->veranda = $validatedData['veranda'];
         $annonce->terrasse = $validatedData['terrasse'];
         $annonce->cuisine = $validatedData['cuisine'];
@@ -106,7 +115,7 @@ class AgenceController extends Controller
         $annonce->garage = $validatedData['garage'];
         $annonce->titreFoncier = $validatedData['titreFoncier'];
         $annonce->localite = $validatedData['localite'];
-        $annonce->localisation = $validatedData['localisation'];
+        $annonce->localisation = $validatedData['localisation'] ?? null;
         $annonce->details = $validatedData['details'] ?? null;
         $annonce->typeTransaction = $validatedData['typeTransaction'];
         $annonce->visite360 = $validatedData['visite360'] ?? null;
@@ -116,7 +125,6 @@ class AgenceController extends Controller
         $annonce->validee = false; // Par défaut, l'annonce n'est pas validée
         $annonce->user_id = $user->user_id; // Associer l'annonce à l'utilisateur connecté
         $annonce->admin_id = $admin->user_id; // Associer l'ID de l'admin trouvé
-
         // Enregistrement de l'annonce
         $annonce->save();
 
@@ -178,21 +186,21 @@ class AgenceController extends Controller
         // Validation des données de l'annonce
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
-            'description' => 'required|string|min:10',
+            'description' => 'nullable|string',
             'montant' => 'required|numeric|min:0',
             'typePropriete' => 'required|string|max:255',
-            'superficie' => 'required|numeric|min:0',
-            'nbChambres' => 'required|integer|min:0',
-            'nbSalleDeDouche' => 'required|integer|min:0',
-            'veranda' => 'required|integer|min:0',
-            'terrasse' => 'required|integer|min:0',
-            'cuisine' => 'required|integer|min:0',
-            'dependance' => 'required|integer|min:0',
-            'piscine' => 'required|integer|min:0',
-            'garage' => 'required|integer|min:0',
-            'titreFoncier' => 'required|integer|min:0',
+            'superficie' => 'nullable|numeric|min:0',
+            'nbChambres' => 'nullable|integer|min:0',
+            'nbSalleDeDouche' => 'nullable|integer|min:0',
+            'veranda' => 'nullable|integer|min:0',
+            'terrasse' => 'nullable|integer|min:0',
+            'cuisine' => 'nullable|integer|min:0',
+            'dependance' => 'nullable|integer|min:0',
+            'piscine' => 'nullable|integer|min:0',
+            'garage' => 'nullable|integer|min:0',
+            'titreFoncier' => 'nullable|integer|min:0',
             'localite' => 'required|string|max:255',
-            'localisation' => 'required|string|max:255',
+            'localisation' => 'nullable|string|max:255',
             'details' => 'nullable|string',
             'typeTransaction' => 'required|string',
             'visite360' => 'nullable|string|max:255',
@@ -205,8 +213,17 @@ class AgenceController extends Controller
             $validatedData['image'] = $request->file('image')->store('annonces', 'public');
         }
 
+        // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
+        $validatedData['veranda'] = $validatedData['veranda'] ?? 0;
+        $validatedData['terrasse'] = $validatedData['terrasse'] ?? 0;
+        $validatedData['cuisine'] = $validatedData['cuisine'] ?? 0;
+        $validatedData['dependance'] = $validatedData['dependance'] ?? 0;
+        $validatedData['piscine'] = $validatedData['piscine'] ?? 0;
+        $validatedData['garage'] = $validatedData['garage'] ?? 0;
+        $validatedData['titreFoncier'] = $validatedData['titreFoncier'] ?? 0;
+
         // Trouver l'admin dont le rôle est 'ADMIN' dans la table users
-        $admin = User::where('role', 'ADMIN')->first(); // On récupère le premier admin trouvé
+        $admin = User::where('role', 'ADMIN')->first();
 
         // Vérifier s'il existe un admin dans la base de données
         if (!$admin) {
@@ -216,15 +233,15 @@ class AgenceController extends Controller
         // Enregistrer la date de création
         $validatedData['dateCreation'] = now();
 
-        // Création de l'annonce avec tous les champs
+        // Création de l'annonce avec les données validées
         $OffreEnVedette = new OffreEnVedette();
         $OffreEnVedette->titre = $validatedData['titre'];
-        $OffreEnVedette->description = $validatedData['description'];
+        $OffreEnVedette->description = $validatedData['description'] ?? null;
         $OffreEnVedette->montant = $validatedData['montant'];
         $OffreEnVedette->typePropriete = $validatedData['typePropriete'];
-        $OffreEnVedette->superficie = $validatedData['superficie'];
-        $OffreEnVedette->nbChambres = $validatedData['nbChambres'];
-        $OffreEnVedette->nbSalleDeDouche = $validatedData['nbSalleDeDouche'];
+        $OffreEnVedette->superficie = $validatedData['superficie'] ?? null;
+        $OffreEnVedette->nbChambres = $validatedData['nbChambres'] ?? null;
+        $OffreEnVedette->nbSalleDeDouche = $validatedData['nbSalleDeDouche'] ?? null;
         $OffreEnVedette->veranda = $validatedData['veranda'];
         $OffreEnVedette->terrasse = $validatedData['terrasse'];
         $OffreEnVedette->cuisine = $validatedData['cuisine'];
@@ -233,7 +250,7 @@ class AgenceController extends Controller
         $OffreEnVedette->garage = $validatedData['garage'];
         $OffreEnVedette->titreFoncier = $validatedData['titreFoncier'];
         $OffreEnVedette->localite = $validatedData['localite'];
-        $OffreEnVedette->localisation = $validatedData['localisation'];
+        $OffreEnVedette->localisation = $validatedData['localisation'] ?? null;
         $OffreEnVedette->details = $validatedData['details'] ?? null;
         $OffreEnVedette->typeTransaction = $validatedData['typeTransaction'];
         $OffreEnVedette->visite360 = $validatedData['visite360'] ?? null;
@@ -243,10 +260,8 @@ class AgenceController extends Controller
         $OffreEnVedette->validee = false; // Par défaut, l'OffreEnVedette n'est pas validée
         $OffreEnVedette->user_id = $user->user_id; // Associer l'OffreEnVedette à l'utilisateur connecté
         $OffreEnVedette->admin_id = $admin->user_id; // Associer l'ID de l'admin trouvé
-
         // Enregistrement de l'OffreEnVedette
         $OffreEnVedette->save();
-
         // Envoi de la notification push
         Notification::create([
             'user_id' => $admin->user_id, // Vous pouvez envoyer la notification à l'admin ou à d'autres utilisateurs
@@ -268,14 +283,14 @@ class AgenceController extends Controller
     }
     public function destroyoffreEnVedette($id)
     {
-          // Trouver l'annonce par son ID
-          $OffreEnVedette = OffreEnVedette::findOrFail($id);
+        // Trouver l'annonce par son ID
+        $OffreEnVedette = OffreEnVedette::findOrFail($id);
 
-          // Supprimer l'OffreEnVedette
-          $OffreEnVedette->delete();
+        // Supprimer l'OffreEnVedette
+        $OffreEnVedette->delete();
 
-          // Rediriger avec un message de succès
-          return redirect()->route('offreEnVedette.liste')->with('success', 'Annonce supprimée avec succès.');
+        // Rediriger avec un message de succès
+        return redirect()->route('offreEnVedette.liste')->with('success', 'Annonce supprimée avec succès.');
     }
 
 

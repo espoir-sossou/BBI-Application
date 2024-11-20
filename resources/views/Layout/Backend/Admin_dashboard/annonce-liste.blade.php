@@ -93,37 +93,41 @@
                                         </td>
 
                                         <td>{{ $annonce->validee ? 'Oui' : 'Non' }}</td>
-                                        <td class="text-right">  <!-- Aligner les boutons à droite -->
-                                            <!-- Formulaire pour Valider / Annuler la validation -->
-                                            @if ($annonce->validee)
-                                                <form action="{{ route('admin.annonces.valider', $annonce->annonce_id) }}" method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('POST')
-                                                    <input type="hidden" name="action" value="unvalidate">
-                                                    <button type="submit" class="btn btn-success btn-sm">
-                                                        <i class="fa fa-check-circle"></i>  <!-- Icone de validation -->
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('admin.annonces.valider', $annonce->annonce_id) }}" method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('POST')
-                                                    <input type="hidden" name="action" value="validate">
-                                                    <button type="submit" class="btn btn-warning btn-sm">
-                                                        <i class="fa fa-times-circle"></i>  <!-- Icone pour annuler -->
-                                                    </button>
-                                                </form>
-                                            @endif
+                                        <td class="text-right">
+                                            <div class="button-container d-flex justify-content-end">
+                                                <!-- Formulaire pour Valider / Annuler la validation -->
+                                                @if ($annonce->validee)
+                                                    <form action="{{ route('admin.annonces.valider', $annonce->annonce_id) }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('POST')
+                                                        <input type="hidden" name="action" value="unvalidate">
+                                                        <button type="submit" class="btn btn-success btn-sm mx-1"> <!-- Ajout de 'mx-1' pour marges -->
+                                                            <span><i class="fa fa-check-circle"></i>Retirer</span>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('admin.annonces.valider', $annonce->annonce_id) }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('POST')
+                                                        <input type="hidden" name="action" value="validate">
+                                                        <button type="submit" class="btn btn-warning btn-sm mx-1"> <!-- Ajout de 'mx-1' pour marges -->
+                                                            <span><i class="fa fa-times-circle"></i> Approuver</span>
+                                                        </button>
+                                                    </form>
+                                                @endif
 
-                                            <!-- Formulaire pour Supprimer -->
-                                            <form action="{{ route('admin.annonces.destroy', $annonce->annonce_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fa fa-trash"></i>  <!-- Icone de suppression -->
-                                                </button>
-                                            </form>
+                                                <!-- Formulaire pour Supprimer -->
+                                                <form action="{{ route('admin.annonces.destroy', $annonce->annonce_id) }}" method="POST" style="display:inline;"
+                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm mx-1"> <!-- Ajout de 'mx-1' pour marges -->
+                                                        <span><i class="fa fa-trash"></i></span>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
