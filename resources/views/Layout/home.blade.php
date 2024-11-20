@@ -105,10 +105,10 @@
         /* Règle pour petits écrans */
         @media (max-width: 768px) {
             .section.properties {
-                margin-top: -20px;
+                margin-top: 120px;
                 /* Augmentez la valeur négative pour aller encore plus haut */
                 position: relative;
-                top: -20px;
+                top: 120px;
                 /* Ajustez cette valeur selon vos besoins */
             }
         }

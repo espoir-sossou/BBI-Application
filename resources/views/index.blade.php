@@ -1,7 +1,7 @@
 @extends('Layout.home')
 
 @section('content')
-    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" style="height: 50vh;">
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" style="height: 50vh; margin-bottom:200px">
         <div class="carousel-inner h-100">
             @foreach ($offresEnVedette as $index => $offre)
                 <div class="carousel-item h-100 {{ $index === 0 ? 'active' : '' }}">
@@ -43,14 +43,14 @@ border-radius: 5px; /* Coins arrondis pour un style moderne */
     </div>
 
 
-    <div class="row" style="position: relative; top:-60px">
+    <div class="row" style="position: relative; top:-250px">
         <div class="col-lg-12">
             <!-- Banniere -->
             <div class="container-fluid">
 
                 <!-- Featured Start -->
                 <div class="container-fluid pt-4">
-                    <div class="row px-xl-5 ">
+                    <div class="row px-xl-5 tags ">
 
                         <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                             <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
@@ -82,7 +82,7 @@ border-radius: 5px; /* Coins arrondis pour un style moderne */
                     </div>
                 </div>
 
-               
+
             </div>
 
             <div class="section properties">
@@ -96,15 +96,16 @@ border-radius: 5px; /* Coins arrondis pour un style moderne */
                                             style="max-width: 400px;">
                                     </a>
                                     <span class="category"
-                                    style="
+                                        style="
                                     background-color: {{ $annonce->typeTransaction === 'A louer' ? 'green' : ($annonce->typeTransaction === 'A vendre' ? '#17a2b8' : 'transparent') }};
                                     color: white;
                                     padding: 5px 10px;
                                     border-radius: 5px;
                                     font-size: 14px;
                                     display: inline-block;">
-                                    {{ $annonce->typeTransaction }}
-                                </span>                                     <h6>{{ number_format($annonce->montant, 0, ',', ' ') }} XOF</h6>
+                                        {{ $annonce->typeTransaction }}
+                                    </span>
+                                    <h6>{{ number_format($annonce->montant, 0, ',', ' ') }} XOF</h6>
                                     <h4>
                                         <a href="property-details.html">{{ $annonce->titre }}</a>
                                     </h4>
