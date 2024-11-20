@@ -82,54 +82,7 @@ border-radius: 5px; /* Coins arrondis pour un style moderne */
                     </div>
                 </div>
 
-                <!-- Featured End -->
-
-                <!-- start maison -->
-                <div class="single-property section">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <div class="main-image">
-                                    <img src="Frontend/Home/assets/imgs/single-property.jpg" alt="">
-                                </div>
-                                <div class="main-content">
-                                    <span class="category">Appartement</span>
-                                    <h4>24 New Street Miami, OR 24560</h4>
-
-                                </div>
-
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="info-table">
-                                    <ul>
-                                        <li>
-                                            <img src="Frontend/Home/assets/imgs/info-icon-01.png" alt=""
-                                                style="max-width: 52px;">
-                                            <h4>450 m2<br><span>Surface Totale</span></h4>
-                                        </li>
-                                        <li>
-                                            <img src="Frontend/Home/assets/imgs/info-icon-02.png" alt=""
-                                                style="max-width: 52px;">
-                                            <h4>Contrat<br><span>Contrat Prêt</span></h4>
-                                        </li>
-                                        <li>
-                                            <img src="Frontend/Home/assets/imgs/info-icon-03.png" alt=""
-                                                style="max-width: 52px;">
-                                            <h4>Paiement<br><span>Processus de Paiement</span></h4>
-                                        </li>
-                                        <li>
-                                            <img src="Frontend/Home/assets/imgs/info-icon-04.png" alt=""
-                                                style="max-width: 52px;">
-                                            <h4>Sécurité<br><span>Sous Contrôle 24h/24</span></h4>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <!-- maison end -->
+               
             </div>
 
             <div class="section properties">
