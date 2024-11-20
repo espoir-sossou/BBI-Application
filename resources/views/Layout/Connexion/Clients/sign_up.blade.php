@@ -69,7 +69,6 @@
                                         <option value="VENDEUR" {{ old('role') == 'VENDEUR' ? 'selected' : '' }}>Vendeur</option>
                                         <option value="AGENCE" {{ old('role') == 'AGENCE' ? 'selected' : '' }}>Agence</option>
                                         <option value="USER" {{ old('role') == 'USER' ? 'selected' : '' }}>Simple Utilisateur</option>
-                                        <option value="ADMIN" {{ old('role') == 'ADMIN' ? 'selected' : '' }}>ADMIN</option>
 
                                     </select>
                                     <span class="text-danger">

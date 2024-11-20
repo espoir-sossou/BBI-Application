@@ -102,7 +102,7 @@ public function login(Request $request)
         'AGENCE' => route('agence.dashboard'),
         'VENDEUR' => route('vendeur.dashboard'),
         'ACHETEUR' => route('acheteur.dashboard'),
-        'USER' => route('user.dashboard'),
+        'USER' => route('loginPage'),
         default => route('loginPage'),
     };
 

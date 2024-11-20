@@ -65,7 +65,7 @@
             <ul>
                 <li><span class="highlight">Titre de l'annonce :</span> {{ $annonce->titre }}</li>
                 <li><span class="highlight">Description :</span> {{ $annonce->description }}</li>
-                <li><span class="highlight">Montant :</span> {{ number_format($annonce->prix, 2, ',', ' ') }} FCFA</li>
+                <li><span class="highlight">Montant :</span> {{ number_format($annonce->Montant, 2, ',', ' ') }} FCFA</li>
                 <li><span class="highlight">Localité :</span> {{ $annonce->localite }}</li>
                 <li><span class="highlight">Type de transaction :</span> {{ $annonce->typeTransaction }}</li>
                 <li><span class="highlight">Date de création :</span> {{ $annonce->dateCreation->format('d-m-Y H:i') }}</li>
@@ -73,7 +73,7 @@
 
             <p>Merci de vérifier l'annonce dans votre tableau de bord pour plus de détails et approbation.</p>
 
-            <a href="" class="button">Voir l'annonce</a>
+            <a href="{{ route('homePage') }}" class="button">Voir l'annonce</a>
         </div>
 
         <div class="footer">
