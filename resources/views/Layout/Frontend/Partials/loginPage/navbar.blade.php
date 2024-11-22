@@ -6,7 +6,7 @@
       <!-- Logo Section -->
       <div class="col-6 col-md-6 text-center text-md-left">
         <a href="/">
-          <img class="img-fluid" src="Frontend/Home/assets/imgs/logo_bbi.png" alt=""
+          <img class="img-fluid" src="{{ asset('Frontend/Home/assets/imgs/logo_bbi.png') }}" alt=""
             style="width: 100px; height: auto;">
         </a>
       </div>

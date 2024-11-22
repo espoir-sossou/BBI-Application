@@ -53,7 +53,7 @@
             <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-0">
                 <a href="" class="text-decoration-none d-block d-lg-none">
                     <div class="" style="width: 200px; height: 80px;">
-                        <img class="img-fluid" src="Generales/img/logo2.jpg" alt="">
+                        <img class="img-fluid" src="{{ asset('Generales/img/logo2.jpg') }}" alt="">
                     </div>
                 </a>
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
@@ -63,7 +63,7 @@
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav mr-auto py-0">
                         <a href="/" class="nav-item nav-link active" style="color: #318093">Home</a>
-                        <a href="" class="nav-item nav-link">
+                        <a href="{{ route('offre') }}" class="nav-item nav-link">
                             <i class="fa fa-tag" aria-hidden="true"></i>
                             Offre
                         </a>
@@ -75,7 +75,7 @@
                             <i class="fa fa-filter" aria-hidden="true"></i>
                             Filtre
                         </a>
-                        <a href="{{ route('signUpPage') }}" class="nav-item nav-link">
+                        <a href="{{ route('agent.loginPage') }}" class="nav-item nav-link">
                             <i class="fa fa-user" aria-hidden="true"></i>
                             Agent
                         </a>

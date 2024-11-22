@@ -75,7 +75,9 @@ class AgenceController extends Controller
 
         // Enregistrer l'image si elle est présente
         if ($request->hasFile('image')) {
-            $validatedData['image'] = $request->file('image')->store('annonces', 'public');
+            // Utilisation du disque personnalisé 'annonces' pour stocker l'image
+            $imagePath = $request->file('image')->store('images', 'annonces');
+            $validatedData['image'] = $imagePath; // Stocker le chemin de l'image
         }
 
         // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
@@ -158,6 +160,80 @@ class AgenceController extends Controller
         // Rediriger avec un message de succès
         return redirect()->route('annonce.liste')->with('success', 'Annonce supprimée avec succès.');
     }
+    public function annonceEditPage($annonce_id)
+    {
+        // Récupérer l'annonce par son ID
+        $annonce = Annonce::findOrFail($annonce_id);
+
+        // Retourner la vue d'édition avec les données de l'annonce
+        return view('Layout.Backend.Agence_dashboard.annonce-edit-page', compact('annonce'));
+    }
+    public function annonceUpdate(Request $request, $annonce_id)
+    {
+        // Vérification de l'existence de l'utilisateur connecté
+        $userId = session('user_id');
+        $userRole = session('user_role');
+
+        // Si l'utilisateur n'est pas trouvé dans la session, rediriger vers la page de connexion
+        if (!$userId || !$userRole) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour mettre à jour l\'annonce.']);
+        }
+
+        // Vérifier si l'utilisateur est autorisé à modifier cette annonce
+        $user = User::where('user_id', $userId)->first();
+        if (!$user || $user->role !== 'AGENCE') {
+            return redirect()->back()->withErrors(['error' => 'Vous n\'êtes pas autorisé à modifier cette annonce.']);
+        }
+
+        // Récupérer l'annonce par son ID
+        $annonce = Annonce::findOrFail($annonce_id);
+
+        // Validation des données du formulaire
+        $validatedData = $request->validate([
+            'titre' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'montant' => 'required|numeric|min:0',
+            'typePropriete' => 'required|string|max:255',
+            'superficie' => 'nullable|numeric|min:0',
+            'nbChambres' => 'nullable|integer|min:0',
+            'nbSalleDeDouche' => 'nullable|integer|min:0',
+            'veranda' => 'nullable|integer|min:0',
+            'terrasse' => 'nullable|integer|min:0',
+            'cuisine' => 'nullable|integer|min:0',
+            'dependance' => 'nullable|integer|min:0',
+            'piscine' => 'nullable|integer|min:0',
+            'garage' => 'nullable|integer|min:0',
+            'titreFoncier' => 'nullable|integer|min:0',
+            'localite' => 'required|string|max:255',
+            'localisation' => 'nullable|string|max:255',
+            'details' => 'nullable|string',
+            'typeTransaction' => 'required|string',
+            'visite360' => 'nullable|string|max:255',
+            'video' => 'nullable|string|max:255',
+            'image' => 'required|file|mimes:jpeg,png,gif|max:2048',
+        ]);
+
+        // Si une nouvelle image est envoyée, enregistrer l'image
+        if ($request->hasFile('image')) {
+            // Utilisation du disque personnalisé 'annonces' pour stocker l'image
+            $imagePath = $request->file('image')->store('images', 'annonces');
+            $validatedData['image'] = $imagePath;
+        }
+
+        // Mise à jour de l'annonce avec les nouvelles données validées
+        $annonce->update($validatedData);
+
+        // Envoi de la notification push
+        Notification::create([
+            'user_id' => $user->user_id,
+            'message' => 'L\'annonce "' . $annonce->titre . '" a été mise à jour.',
+            'is_read' => false,
+            'type' => 'push',
+        ]);
+        // Redirection avec un message de succès
+        return redirect()->route('annonce.liste')->with('success', 'Annonce mise à jour avec succès !');
+    }
+
 
 
     public function offreEnVedetteAddPage()
@@ -208,9 +284,12 @@ class AgenceController extends Controller
             'image' => 'required|file|mimes:jpeg,png,gif|max:2048',
         ]);
 
+
         // Enregistrer l'image si elle est présente
         if ($request->hasFile('image')) {
-            $validatedData['image'] = $request->file('image')->store('annonces', 'public');
+            // Utilisation du disque personnalisé 'annonces' pour stocker l'image
+            $imagePath = $request->file('image')->store('images', 'annonces');
+            $validatedData['image'] = $imagePath; // Stocker le chemin de l'image
         }
 
         // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
@@ -281,6 +360,80 @@ class AgenceController extends Controller
         $OffreEnVedette = OffreEnVedette::all(); // Récupérer toutes les OffreEnVedette
         return view('Layout.Backend.Agence_dashboard.Offre_en_vedette.annonce-liste', compact('OffreEnVedette'));
     }
+    public function offreEnVedetteditPage($annonce_id)
+    {
+        // Récupérer l'annonce par son ID
+        $OffreEnVedette = OffreEnVedette::findOrFail($annonce_id);
+
+        // Retourner la vue d'édition avec les données de l'annonce
+        return view('Layout.Backend.Agence_dashboard.Offre_en_vedette.annonce-edit-page', compact('OffreEnVedette'));
+    }
+    public function offreEnVedetteUpdate(Request $request, $annonce_id)
+    {
+        // Vérification de l'existence de l'utilisateur connecté
+        $userId = session('user_id');
+        $userRole = session('user_role');
+
+        // Si l'utilisateur n'est pas trouvé dans la session, rediriger vers la page de connexion
+        if (!$userId || !$userRole) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour mettre à jour l\'annonce.']);
+        }
+
+        // Vérifier si l'utilisateur est autorisé à modifier cette annonce
+        $user = User::where('user_id', $userId)->first();
+        if (!$user || $user->role !== 'AGENCE') {
+            return redirect()->back()->withErrors(['error' => 'Vous n\'êtes pas autorisé à modifier cette annonce.']);
+        }
+
+        // Récupérer l'annonce par son ID
+        $OffreEnVedette = OffreEnVedette::findOrFail($annonce_id);
+
+        // Validation des données du formulaire
+        $validatedData = $request->validate([
+            'titre' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'montant' => 'required|numeric|min:0',
+            'typePropriete' => 'required|string|max:255',
+            'superficie' => 'nullable|numeric|min:0',
+            'nbChambres' => 'nullable|integer|min:0',
+            'nbSalleDeDouche' => 'nullable|integer|min:0',
+            'veranda' => 'nullable|integer|min:0',
+            'terrasse' => 'nullable|integer|min:0',
+            'cuisine' => 'nullable|integer|min:0',
+            'dependance' => 'nullable|integer|min:0',
+            'piscine' => 'nullable|integer|min:0',
+            'garage' => 'nullable|integer|min:0',
+            'titreFoncier' => 'nullable|integer|min:0',
+            'localite' => 'required|string|max:255',
+            'localisation' => 'nullable|string|max:255',
+            'details' => 'nullable|string',
+            'typeTransaction' => 'required|string',
+            'visite360' => 'nullable|string|max:255',
+            'video' => 'nullable|string|max:255',
+            'image' => 'required|file|mimes:jpeg,png,gif|max:2048',
+        ]);
+
+        // Si une nouvelle image est envoyée, enregistrer l'image
+        if ($request->hasFile('image')) {
+            // Utilisation du disque personnalisé 'annonces' pour stocker l'image
+            $imagePath = $request->file('image')->store('images', 'annonces');
+            $validatedData['image'] = $imagePath;
+        }
+
+        // Mise à jour de l'annonce avec les nouvelles données validées
+        $OffreEnVedette->update($validatedData);
+
+        // Envoi de la notification push
+        Notification::create([
+            'user_id' => $user->user_id,
+            'message' => 'L\'Offre en Vedette "' . $OffreEnVedette->titre . '" a été mise à jour.',
+            'is_read' => false,
+            'type' => 'push',
+        ]);
+        // Redirection avec un message de succès
+        return redirect()->route('offreEnVedette.liste')->with('success', 'Offre en Vedette mise à jour avec succès !');
+    }
+
     public function destroyoffreEnVedette($id)
     {
         // Trouver l'annonce par son ID

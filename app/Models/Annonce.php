@@ -46,4 +46,9 @@ class Annonce extends Model
     {
         return $this->belongsTo(User::class, 'assigned_admin_id', 'user_id');
     }
+    public function paniers()
+{
+    return $this->hasMany(Panier::class, 'annonce_id', 'annonce_id');
+}
+
 }

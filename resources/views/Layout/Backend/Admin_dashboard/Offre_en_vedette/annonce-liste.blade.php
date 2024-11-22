@@ -86,12 +86,12 @@
                                         <td>{{ $OffreEnVedette->video }}</td>
                                         <td>
                                             @if ($OffreEnVedette->image)
-                                                <img src="{{ asset('storage/' . $OffreEnVedette->image) }}"
-                                                    alt="Image Annonce" width="50">
+                                                <img src="{{ asset('uploads/annonces/' . $OffreEnVedette->image) }}" alt="Image Annonce" width="50">
                                             @else
                                                 Aucun
                                             @endif
                                         </td>
+
 
                                         <td>{{ $OffreEnVedette->validee ? 'Oui' : 'Non' }}</td>
                                         <td class="text-right">

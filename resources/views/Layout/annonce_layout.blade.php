@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8">
     <title>Bolivie Business Inter</title>
@@ -126,35 +127,6 @@
         .carousel-inner {
             overflow: hidden;
         }
-
-        @media (max-width: 576px) {
-
-            .section.properties.annonce {
-                margin-top: 0px;
-                /* Augmentez la valeur négative pour aller encore plus haut */
-                position: relative;
-                top: 0px;
-                /* Ajustez cette valeur selon vos besoins */
-            }
-        }
-
-        .favorite-icon {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            z-index: 10;
-        }
-
-        .favorite-icon .btn {
-            background: none;
-            border: none;
-            padding: 0;
-        }
-
-        .favorite-icon .btn:hover i {
-            color: #ff0000;
-            /* Couleur de l'icône quand elle est cliquée */
-        }
     </style>
 </head>
 
@@ -172,13 +144,13 @@
   </div>
   Preloader End ***** -->
 
-    @include('Layout.Frontend.Partials.topbar')
+    @include('Layout.Frontend.Annonce.Partials.topbar')
 
-    @include('Layout.Frontend.Partials.navbar')
+    @include('Layout.Frontend.Annonce.Partials.navbar')
 
     @yield('content')
 
-    @include('Layout.Frontend.Partials.footer')
+    @include('Layout.Frontend.Annonce.Partials.footer')
 
     <!-- Back to Top -->
     <a href="#" class="btn  back-to-top" style="background-color:#fd7e14; color:white"><i

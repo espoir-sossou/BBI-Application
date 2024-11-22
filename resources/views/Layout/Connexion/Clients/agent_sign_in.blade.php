@@ -80,18 +80,6 @@
                                     <span class="px-3 text-muted" style="font-size: 18px;">ou</span>
                                     <hr class="flex-grow-1" style="border: 1px solid #ccc;">
                                 </div>
-
-                                <!-- Bouton Se connecter avec Google -->
-                                <div class="text-center">
-                                    <a href="#" class="btn btn-outline-primary"
-                                        style="font-size: 18px; padding: 10px 20px; color: #318093; border-color: #318093;">
-                                        <img src="Frontend/Home/assets/imgs/google.png" alt="Google"
-                                            style="width: 30px; height: auto; margin-right: 10px;"> Se connecter avec Google
-                                    </a>
-                                </div>
-
-
-
                             </form>
                         </div>
                         <div class="col-md-3"></div>

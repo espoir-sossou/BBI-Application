@@ -185,18 +185,20 @@
             </div>
 
             <div class="btn-group mx-1">
-                <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
+                <a href="tel:+22890803347" class="btn btn-sm btn-light d-flex align-items-center">
                     <i class="fa fa-phone" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
                     <span class="ml-2" style="color: #318093">Appeler</span>
-                </button>
+                </a>
             </div>
 
+
             <div class="btn-group mx-1">
-                <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
+                <a href="sms:+22890803347" class="btn btn-sm btn-light d-flex align-items-center">
                     <i class="fa fa-comment" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
                     <span class="ml-2" style="color: #318093">Messages</span>
-                </button>
+                </a>
             </div>
+
 
             <div class="btn-group mx-1">
                 <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
@@ -206,17 +208,21 @@
             </div>
 
             <div class="btn-group mx-1">
-                <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
-                    <i class="fa fa-heart" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
-                    <span class="ml-2" style="color: #318093">Favori</span>
-                </button>
+                <a href="{{ route('favoris') }}">
+                    <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
+                        <i class="fa fa-heart" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
+                        <span class="ml-2" style="color: #318093">Favori</span>
+                    </button>
+                </a>
             </div>
 
             <div class="btn-group mx-1">
-                <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
-                    <i class="fa fa-shopping-cart" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
-                    <span class="ml-2" style="color: #318093">Panier</span>
-                </button>
+                <a href="{{ route('panier') }}">
+                    <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
+                        <i class="fa fa-shopping-cart" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
+                        <span class="ml-2" style="color: #318093">Panier</span>
+                    </button>
+                </a>
             </div>
 
             <div class="btn-group mx-1">
@@ -232,21 +238,28 @@
                     <i class="fa fa-user" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
                     <span class="ml-2" style="color: #318093">Profil</span>
                 </button>
-                <div class="dropdown-menu"> <!-- Supprimée la classe 'dropdown-menu-right' -->
-                    <!-- Gestion des liens de profil et déconnexion -->
-                    @if (session()->has('user'))
+                <div class="dropdown-menu dropdown-menu-right">
+                    @php
+                        // Vérification de l'existence de l'utilisateur connecté dans la session
+                        $userId = session('user_id');
+                        $userRole = session('user_role');
+                    @endphp
+
+                    @if ($userId && $userRole === 'USER')
+                        <!-- Si l'utilisateur est connecté et son rôle est 'USER' -->
                         <a href="{{ route('user.profil') }}">
-                            <button class="dropdown-item" type="button" style="color: #318093">Voir Profil</button>
+                            <button class="dropdown-item" type="button" style="color: #318093">
+                                Profil
+                            </button>
                         </a>
-                        <form id="logout-form" action="{{ route('user.logout') }}" method="POST"
-                            style="display: none;">
+                        <form id="logout-form" action="{{ route('authLogout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
-                        <button class="dropdown-item" type="button" style="color: #318093"
-                            onclick="confirmLogout(event)">
+                        <button class="dropdown-item" type="button" style="color: #318093" onclick="confirmLogout(event)">
                             Se déconnecter
                         </button>
                     @else
+                        <!-- Si l'utilisateur n'est pas connecté, afficher les options de connexion et inscription -->
                         <a href="{{ route('loginPage') }}">
                             <button class="dropdown-item" type="button" style="color: #318093">Se connecter</button>
                         </a>
@@ -264,7 +277,7 @@
 <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
     <div class="col-lg-4">
         <a href="/" class="text-decoration-none">
-            <img class="img-fluid" src="Frontend/Home/assets/imgs/logo_bbi.png" alt="Logo"
+            <img class="img-fluid" src="{{ asset('Frontend/Home/assets/imgs/logo_bbi.png') }}" alt="Logo"
                 style="width: 120px; height: 80px;">
         </a>
     </div>
@@ -281,7 +294,7 @@
         </form>
     </div>
     <div class="col-lg-4 col-6 text-right mb-4">
-        <a href="{{ route('loginPage') }}" class="btn btn-outline-primary"
+        <a href="{{ route('agent.loginPage') }}" class="btn btn-outline-primary"
             style="border-radius: 30px; font-weight: 700; color:white; background-color:#318093">
             <i class="fas fa-bullhorn mr-2"></i> Publier une annonce
         </a>
@@ -295,7 +308,7 @@
     <div class="row w-100">
         <!-- Logo aligné à gauche -->
         <div class="col-4">
-            <img src="Frontend/Home/assets/imgs/logo_bbi.png" alt="Logo" class="img-fluid"
+            <img src="{{ asset('Frontend/Home/assets/imgs/logo_bbi.png') }}" alt="Logo" class="img-fluid"
                 style="width: 100px; height: 80px;" />
         </div>
 
@@ -309,7 +322,7 @@
     <div class="d-lg-none">
         <div class="scrolling-buttons">
             <ul class="navbar-nav d-flex flex-row w-100">
-                <a href="{{ route('loginPage') }}">
+                <a href="{{ route('agent.loginPage') }}">
                     <li class="nav-item">
                         <button class="btn btn-light" style=" color:white; background-color:#318093">
                             <i class="fas fa-bullhorn mr-2" style=" color:white; "></i> <span>Annonces</span>
@@ -343,9 +356,11 @@
                     </button>
                 </li>
                 <li class="nav-item">
+                   <a href="{{ route('panier') }}">
                     <button class="btn btn-light">
                         <i class="fa fa-shopping-cart" style="color: #318093;"></i>
                     </button>
+                   </a>
                 </li>
 
                 <li class="nav-item">
@@ -356,31 +371,47 @@
                             <span class="ml-2" style="color: #318093"></span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <!-- Gestion des liens de profil et déconnexion -->
-                            @if (session()->has('user'))
+                            @php
+                                // Vérification de l'existence de l'utilisateur connecté dans la session
+                                $userId = session('user_id');
+                                $userRole = session('user_role');
+                            @endphp
+
+                            @if ($userId && $userRole === 'USER')
+                                <!-- Si l'utilisateur est connecté et son rôle est 'USER' -->
                                 <a href="{{ route('user.profil') }}">
                                     <button class="dropdown-item" type="button" style="color: #318093">
+                                        Profil
                                     </button>
                                 </a>
-                                <form id="logout-form" action="{{ route('user.logout') }}" method="POST"
-                                    style="display: none;">
+                                <form id="logout-form" action="{{ route('authLogout') }}" method="POST" style="display: none;">
                                     @csrf
                                 </form>
-                                <button class="dropdown-item" type="button" style="color: #318093"
-                                    onclick="confirmLogout(event)">
+                                <button class="dropdown-item" type="button" style="color: #318093" onclick="confirmLogout(event)">
                                     Se déconnecter
                                 </button>
                             @else
+                                <!-- Si l'utilisateur n'est pas connecté, afficher les options de connexion et inscription -->
                                 <a href="{{ route('loginPage') }}">
-                                    <button class="dropdown-item" type="button" style="color: #318093">Se
-                                        connecter</button>
+                                    <button class="dropdown-item" type="button" style="color: #318093">Se connecter</button>
                                 </a>
                                 <a href="{{ route('signUpPage') }}">
-                                    <button class="dropdown-item" type="button"
-                                        style="color: #318093">S'inscrire</button>
+                                    <button class="dropdown-item" type="button" style="color: #318093">S'inscrire</button>
                                 </a>
                             @endif
                         </div>
+
+                        <script>
+                            // Fonction de confirmation avant la déconnexion
+                            function confirmLogout(event) {
+                                if (!confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                                    event.preventDefault();
+                                } else {
+                                    document.getElementById('logout-form').submit();
+                                }
+                            }
+                        </script>
+
                     </div>
                 </li>
             </ul>
@@ -392,7 +423,7 @@
 <!-- Bottom Navbar for small screens -->
 <div class="bottom-navbar d-block d-lg-none">
     <div class="navbar">
-        <a href="#" class="bottom-nav-item">
+        <a href="{{ route('offre') }}" class="bottom-nav-item">
             <i class="fa fa-bolt"></i>
             <span>Offre</span>
         </a>
@@ -404,7 +435,7 @@
             <i class="fa fa-filter"></i>
             <span>Filtre</span>
         </a>
-        <a href="{{ route('signUpPage') }}" class="bottom-nav-item">
+        <a href="{{ route('agent.loginPage') }}" class="bottom-nav-item">
             <i class="fa fa-user"></i>
             <span>Agent</span>
         </a>

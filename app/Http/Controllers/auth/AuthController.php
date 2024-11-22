@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\auth;
 
 use App\Models\User;
+use App\Models\Dashboard;
 use Illuminate\Http\Request;
 use App\Mail\SignupConfirmation;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -70,54 +71,83 @@ class AuthController extends Controller
         }
     }
 
-// app/Http/Controllers/auth/AuthController.php
+    // app/Http/Controllers/auth/AuthController.php
 
-public function login(Request $request)
-{
-    // Validation des données d'entrée
-    $validatedData = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|min:6',
-    ]);
+    public function login(Request $request)
+    {
+        // Validation des données d'entrée
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
 
-    // Récupérer l'utilisateur avec l'email fourni
-    $user = User::where('email', $validatedData['email'])->first();
+        // Récupérer l'utilisateur avec l'email fourni
+        $user = User::where('email', $validatedData['email'])->first();
 
-    // Vérification des identifiants
-    if (!$user || !Hash::check($validatedData['password'], $user->password)) {
-        return redirect()->back()->withErrors(['error' => 'Identifiants incorrects']);
+        // Vérification des identifiants
+        if (!$user || !Hash::check($validatedData['password'], $user->password)) {
+            return redirect()->back()->withErrors(['error' => 'Identifiants incorrects']);
+        }
+
+        // Vérification de l'état du compte utilisateur
+        if ($user->status !== 'active') {
+            return redirect()->back()->withErrors(['error' => 'Votre compte est inactif. Veuillez contacter l\'administration.']);
+        }
+
+        // Générer un token JWT
+        $token = JWTAuth::fromUser($user);
+
+        // Déterminer l'URL de redirection en fonction du rôle
+        $redirectUrl = match ($user->role) {
+            'ADMIN' => route('admin.dashboard'),
+            'AGENCE', 'VENDEUR' => $this->getDashboardUrlForAgenceVendeur($user),
+            'USER' => route('homePage'),
+            default => route('loginPage'),
+        };
+
+        // Stocker les informations nécessaires dans la session pour utilisation
+        session([
+            'token' => $token,
+            'user_id' => $user->user_id,
+            'user_role' => $user->role,
+            'user_dashboard_url' => $redirectUrl,  // Ajouter l'URL du tableau de bord
+        ]);
+
+        // Rediriger l'utilisateur vers la page correspondante
+        return redirect($redirectUrl);
     }
 
-    // Vérification de l'état du compte utilisateur
-    if ($user->status !== 'active') {
-        return redirect()->back()->withErrors(['error' => 'Votre compte est inactif. Veuillez contacter l\'administration.']);
+    /**
+     * Récupérer l'URL du tableau de bord pour les rôles AGENCE et VENDEUR
+     */
+    private function getDashboardUrlForAgenceVendeur($user)
+    {
+        // Vérifier si l'utilisateur a déjà un tableau de bord
+        $dashboard = Dashboard::where('user_id', $user->user_id)->first();
+
+        // Si le tableau de bord n'existe pas, en créer un vide
+        if (!$dashboard) {
+            $dashboard = new Dashboard([
+                'user_id' => $user->user_id,
+                'content' => 'Tableau de bord vide',  // Par défaut, le contenu peut être "vide" ou une autre valeur
+            ]);
+            $dashboard->save();  // Sauvegarder le tableau de bord dans la base de données
+        }
+
+        // Rediriger vers le tableau de bord de l'utilisateur en fonction du rôle
+        $dashboardUrl = route('loginPage');  // URL par défaut
+
+        if ($user->role === 'AGENCE') {
+            // Rediriger vers un tableau de bord spécifique à l'AGENCE
+            $dashboardUrl = route('agence.dashboard');
+        } elseif ($user->role === 'VENDEUR') {
+            // Rediriger vers un tableau de bord spécifique au VENDEUR
+            $dashboardUrl = route('vendeur.dashboard');
+        }
+
+        return $dashboardUrl;
     }
 
-    // Générer un token JWT
-    $token = JWTAuth::fromUser($user);
-
-    // Déterminer l'URL de redirection en fonction du rôle
-    $redirectUrl = match ($user->role) {
-        'ADMIN' => route('admin.dashboard'),
-        'AGENCE' => route('agence.dashboard'),
-        'VENDEUR' => route('vendeur.dashboard'),
-        'ACHETEUR' => route('acheteur.dashboard'),
-        'USER' => route('loginPage'),
-        default => route('loginPage'),
-    };
-
-    // Stocker les informations nécessaires dans la session pour utilisation
-    session([
-        'token' => $token,
-        'user_id' => $user->user_id,
-        'user_role' => $user->role,
-    ]);
-
-    // Débogage : Vérifiez les informations stockées dans la session
-
-    // Rediriger l'utilisateur vers la page correspondante
-    return redirect($redirectUrl);
-}
 
 
 
@@ -173,27 +203,49 @@ public function login(Request $request)
 
 
     public function googleLogin()
-{
-    // URL de l'authentification Google sur l'API NestJS
-    $response = config('custom.routes.auth_google_login');
+    {
+        // URL de l'authentification Google sur l'API NestJS
+        $response = config('custom.routes.auth_google_login');
 
-    // Redirection vers l'API pour l'authentification Google
-    return redirect()->away($response);
+        // Redirection vers l'API pour l'authentification Google
+        return redirect()->away($response);
     }
 
     public function userProfil(Request $request)
     {
-        // Vérifier si l'utilisateur est connecté en utilisant la session
-        if ($request->session()->has('user')) {
-            // Récupérer les informations de l'utilisateur depuis la session
-            $userData = $request->session()->get('user');
+        // Vérifier si l'utilisateur est connecté et si le rôle est 'USER'
+        $userId = session('user_id');
+        $userRole = session('user_role');
 
-            // Afficher la page de profil avec les informations de l'utilisateur
-            return view('Layout.Connexion.Clients.user-profile', ['user' => $userData]);
+        // Récupérer les informations de l'utilisateur depuis la session
+        if ($userId && $userRole && $userRole === 'USER') {
+            // L'utilisateur est connecté et son rôle est 'USER'
+
+            // Récupérer les informations utilisateur depuis la base de données
+            $user = User::find($userId); // Remplace "User" par le nom de ton modèle
+
+            if ($user) {
+                // Créer un tableau avec les informations utilisateur
+                $userData = [
+                    'user_id' => $user->id,
+                    'role' => $user->role,
+                    'email' => $user->email,
+                    'nom' => $user->nom,
+                    'prenom' => $user->prenom,
+                    'telephone' => $user->telephone,
+                    // Ajouter d'autres informations si nécessaire
+                ];
+
+                // Passer les données à la vue
+                return view('Layout.Connexion.Clients.user-profile', ['user' => $userData]);
+            } else {
+                // L'utilisateur n'a pas été trouvé dans la base de données
+                return redirect()->route('loginPage')->with('fail', 'Utilisateur introuvable.');
+            }
+        } else {
+            // Si l'utilisateur n'est pas connecté ou son rôle n'est pas 'USER', rediriger vers la page de connexion
+            return redirect()->route('loginPage');
         }
-
-        // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-        return redirect()->route('loginPage');
     }
 
     public function signUpPage()
@@ -239,7 +291,12 @@ public function login(Request $request)
 
     public function loginPage()
     {
-        return view('Layout.Connexion.Clients.sign_in');
+        return view(view: 'Layout.Connexion.Clients.sign_in');
+    }
+
+    public function AgentloginPage()
+    {
+        return view('Layout.Connexion.Clients.agent_sign_in');
     }
     public function handleLogin(Request $request)
     {
@@ -272,8 +329,6 @@ public function login(Request $request)
                     return redirect()->route('agence.dashboard')->with('success', 'Connexion réussie !');
                 case 'VENDEUR':
                     return redirect()->route('vendeur.dashboard')->with('success', 'Connexion réussie !');
-                case 'ACHETEUR':
-                    return redirect()->route('acheteur.dashboard')->with('success', 'Connexion réussie !');
                 case 'USER':
                     return redirect()->route('user.dashboard')->with('success', 'Connexion réussie !');
                 default:
@@ -287,7 +342,7 @@ public function login(Request $request)
         }
     }
 
-
+    /*
     public function handleLogout(Request $request)
     {
         // Vérifiez si un utilisateur est authentifié dans la session
@@ -314,6 +369,22 @@ public function login(Request $request)
             return redirect()->route('loginPage')->with('fail', 'Aucun utilisateur connecté.');
         }
     }
+ */
+
+    public function authLogout(Request $request)
+    {
+        // Effacer les informations de l'utilisateur de la session
+        $request->session()->forget('user_id');
+        $request->session()->forget('user_role');
+        $request->session()->forget('user'); // Si tu as des informations supplémentaires stockées
+
+        // Optionnellement, on peut aussi détruire complètement la session
+        $request->session()->flush();
+
+        // Rediriger l'utilisateur vers la page de connexion
+        return redirect()->route('loginPage')->with('success', 'Vous êtes maintenant déconnecté.');
+    }
+
 
 
 

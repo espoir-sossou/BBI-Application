@@ -49,4 +49,9 @@ class User extends Authenticatable implements JWTSubject
             'role' => $this->role, // Exemple : Ajouter le rôle de l'utilisateur dans le JWT
         ];
     }
+    public function paniers()
+{
+    return $this->hasMany(Panier::class, 'user_id', 'user_id');
+}
+
 }

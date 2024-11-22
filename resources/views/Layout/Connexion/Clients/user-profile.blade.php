@@ -24,7 +24,6 @@
             </div>
         </div>
 
-
         <!-- Informations utilisateur -->
         <div class="row mt-4">
             @if (isset($user))
@@ -82,21 +81,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Date de naissance (si disponible) -->
-                @if (isset($user['date_naissance']))
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="bg-light p-4 rounded d-flex align-items-center">
-                            <i class="fas fa-birthday-cake fa-2x mr-3" style="color: #318093;"></i>
-                            <div>
-                                <h5 class="font-weight-bold">Date de Naissance :</h5>
-                                <p class="m-0">
-                                    {{ \Carbon\Carbon::parse($user['date_naissance'])->format('d-m-Y') ?? 'Non renseigné' }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
             @else
                 <div class="col-12 text-center">
                     <p class="text-muted">Aucune information utilisateur disponible.</p>

@@ -86,21 +86,30 @@
                                         <td>{{ $OffreEnVedette->video }}</td>
                                         <td>
                                             @if ($OffreEnVedette->image)
-                                            <img src="{{ asset('storage/' . $OffreEnVedette->image) }}" alt="Image Annonce" width="50">
+                                                <img src="{{ asset('uploads/annonces/' . $OffreEnVedette->image) }}"
+                                                    alt="Image Annonce" width="50">
                                             @else
                                                 Aucun
                                             @endif
                                         </td>
 
-                                        <td>{{ $OffreEnVedette->validee ? 'Oui' : 'Non' }}</td>
-                                        <td class="text-right">  <!-- Aligner les boutons à droite -->
 
+                                        <td>{{ $OffreEnVedette->validee ? 'Oui' : 'Non' }}</td>
+                                        <td class="text-right"> <!-- Aligner les boutons à droite -->
+                                            <!-- Lien pour l'édition -->
+                                            <a href="{{ route('offreEnVedette.edit', $OffreEnVedette->offre_en_vedettes_id) }}"
+                                                class="btn btn-warning btn-sm ml-2">
+                                                <i class="fa fa-edit"></i> <!-- Icone d'édition -->
+                                            </a>
                                             <!-- Formulaire pour Supprimer -->
-                                            <form action="{{ route('offreEnVedette.destroy', $OffreEnVedette->offre_en_vedettes_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
+                                            <form
+                                                action="{{ route('offreEnVedette.destroy', $OffreEnVedette->offre_en_vedettes_id) }}"
+                                                method="POST" style="display:inline;"
+                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fa fa-trash"></i>  <!-- Icone de suppression -->
+                                                    <i class="fa fa-trash"></i> <!-- Icone de suppression -->
                                                 </button>
                                             </form>
                                         </td>

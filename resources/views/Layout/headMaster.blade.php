@@ -11,10 +11,10 @@
 
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="Generales/Villa/assets/css/fontawesome.css">
-    <link rel="stylesheet" href="Generales/Villa/assets/css/templatemo-villa-agency.css">
-    <link rel="stylesheet" href="Generales/Villa/assets/css/owl.css">
-    <link rel="stylesheet" href="Generales/Villa/assets/css/animate.css">
+    <link rel="stylesheet" href="{{ asset('Generales/Villa/assets/css/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('Generales/Villa/assets/css/templatemo-villa-agency.css') }}">
+    <link rel="stylesheet" href="{{ asset('Generales/Villa/assets/css/owl.css') }}">
+    <link rel="stylesheet" href="{{ asset('Generales/Villa/assets/css/animate.css') }}">
     <link rel="stylesheet"href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -25,8 +25,8 @@
 
 
 
-    <link rel="stylesheet" href="Auberge/css/style.css">
-    <link rel="stylesheet" href="Auberge/css/responsive.css">
+    <link rel="stylesheet" href="{{ asset('Auberge/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('Auberge/css/responsive.css') }}">
 
 
 
@@ -38,15 +38,15 @@
 
 
 
-        <script src="Generales/js/headMaster_style.js" defer></script>
+        <script src="{{ asset('Generales/js/headMaster_style.js') }}" defer></script>
 
         <!-- Libraries Stylesheet -->
-        <link href="Generales/lib/animate/animate.min.css" rel="stylesheet">
-        <link href="Generales/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+        <link href="{{ asset('Generales/lib/animate/animate.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('Generales/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
 
         <!-- Customized Bootstrap Stylesheet -->
-        <link href="Generales/css/style.css" rel="stylesheet">
-        <link href="Generales/css/headMaster_style.css" rel="stylesheet">
+        <link href={{ asset('"Generales/css/style.css') }}" rel="stylesheet">
+        <link href="{{ asset('Generales/css/headMaster_style.css') }}" rel="stylesheet">
 
          <!-- Font Awesome -->
          <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -56,7 +56,7 @@
          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
-         <script src="Hotels/js/style.js" defer></script>
+         <script src="{{ asset('Hotels/js/style.js') }}" defer></script>
 
 
     </head>

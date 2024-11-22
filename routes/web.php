@@ -22,12 +22,42 @@ use App\Http\Controllers\NotificationController;
 */
 
 Route::get('/', [HomeController::class, 'homePage'])->name('homePage');
+Route::get('/annonce/{annonce_id}', [HomeController::class, 'showAnnonce'])->name('annonce.details');
+
+// Route pour ajouter au panier
+Route::post('/ajouter-au-panier/{annonce_id}', [HomeController::class, 'ajouterAuPanier'])->name('ajouterAuPanier');
+// Route pour afficher le panier
+Route::get('/panier', [HomeController::class, 'afficherPanier'])->name('panier');
+// Route pour supprimer une annonce du panier
+Route::delete('/panier/supprimer/{annonce_id}', [HomeController::class, 'supprimerDuPanier'])->name('panier.supprimer');
+
+// Route pour ajouter une annonce aux favoris
+Route::post('/ajouter-aux-favoris/{annonce_id}', [HomeController::class, 'ajouterAuxFavoris'])->name('ajouterAuxFavoris');
+
+// Route pour afficher les favoris
+Route::get('/favoris', [HomeController::class, 'afficherFavoris'])->name('favoris');
+
+// Route pour supprimer une annonce des favoris
+Route::delete('/favoris/supprimer/{annonce_id}', [HomeController::class, 'supprimerDesFavoris'])->name('favoris.supprimer');
+
+
+Route::get('/offres', [HomeController::class, 'offre'])->name('offre');
+
+
+
+
+
+
+
 
 Route::get('/login-page', [AuthController::class, 'loginPage'])->name('loginPage');
+Route::get('/agent/login-page', [AuthController::class, 'AgentloginPage'])->name('agent.loginPage');
 Route::post('register-user', [AuthController::class, 'signup'])->name('signup.user');
 Route::get('/signup-confirmation', [AuthController::class, 'signupConfirmation'])->name('signup.confirmation');
 Route::post('/login-post', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/auth-logout', [AuthController::class, 'authLogout'])->name('authLogout');
+
 
 
 
@@ -58,7 +88,7 @@ Route::get('/signup-page', [AuthController::class, 'signUpPage'])->name('signUpP
 Route::post('/sign-up', [AuthController::class, 'handleSignup'])->name('handleSignup');
 
 // Route de déconnexion, accessible uniquement aux utilisateurs authentifiés
-Route::post('/user-logout', [AuthController::class, 'handleLogout'])->name('user.logout');
+// Route::post('/user-logout', [AuthController::class, 'handleLogout'])->name('user.logout');
 
 // Routes protégées par no-back-historyentification et non accessibles après déconnexion
 Route::middleware(['no-back-history',])->group(function () {
@@ -93,12 +123,23 @@ Route::middleware(['no-back-history',])->group(function () {
     Route::get('/annonce-add-page', [AgenceController::class, 'annonceAddPage'])->name('annonce.add.page');
     Route::post('/annonce-create', [AgenceController::class, 'annonceCreate'])->name('annonce.create');
     Route::get('/annonce-liste', [AgenceController::class, 'annonceListe'])->name('annonce.liste');
+    // Route pour afficher la page d'édition de l'annonce
+    Route::get('/annonce-edit/{annonce_id}', [AgenceController::class, 'annonceEditPage'])->name('annonce.edit');
+
+    // Route pour traiter la mise à jour de l'annonce
+    Route::post('/annonce-update/{annonce_id}', [AgenceController::class, 'annonceUpdate'])->name('annonce.update');
+
 
     Route::delete('/annonce/{id}', [AgenceController::class, 'destroyAnnonce'])->name('annonces.destroy');
 
     Route::get('/offre-en-vedette-add-page', [AgenceController::class, 'offreEnVedetteAddPage'])->name('offreEnVedette.add.page');
     Route::post('/offre-en-vedette-create', [AgenceController::class, 'offreEnVedetteCreate'])->name('offreEnVedette.create');
     Route::get('/offre-en-vedette-liste', [AgenceController::class, 'offreEnVedetteListe'])->name('offreEnVedette.liste');
+
+    Route::get('/offre-en-vedette-nce-edit/{annonce_id}', [AgenceController::class, 'offreEnVedetteditPage'])->name('offreEnVedette.edit');
+
+    // Route pour traiter la mise à jour de l'annonce
+    Route::post('/offre-en-vedette--update/{annonce_id}', [AgenceController::class, 'offreEnVedetteUpdate'])->name('offreEnVedette.update');
 
     Route::delete('/offre-en-vedette/{id}', [AgenceController::class, 'destroyoffreEnVedette'])->name('offreEnVedette.destroy');
 
@@ -129,6 +170,7 @@ Route::middleware(['no-back-history',])->group(function () {
     Route::get('/user/table', [UserController::class, 'userTable'])->name('user.table');
     Route::get('/user/chart', [UserController::class, 'userChart'])->name('user.chart');
     Route::get('/filtre-page', [UserController::class, 'filtrePage'])->name('filtre.page');
+
 
 });
 

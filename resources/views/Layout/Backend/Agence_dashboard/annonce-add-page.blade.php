@@ -36,7 +36,7 @@
                     <!-- Description -->
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" >{{ old('description') }}</textarea>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ old('description') }}</textarea>
                     </div>
 
                     <div class="form-group">
@@ -63,21 +63,21 @@
                     <div class="form-group">
                         <label for="superficie">Superficie</label>
                         <input type="number" step="0.1" class="form-control" id="superficie" name="superficie"
-                            value="{{ old('superficie') }}" >
+                            value="{{ old('superficie') }}">
                     </div>
 
                     <!-- Number of Rooms -->
                     <div class="form-group">
                         <label for="nbChambres">Nombre de Chambres</label>
                         <input type="number" class="form-control" id="nbChambres" name="nbChambres"
-                            value="{{ old('nbChambres') }}" >
+                            value="{{ old('nbChambres') }}">
                     </div>
 
                     <!-- Number of Bathrooms -->
                     <div class="form-group">
                         <label for="nbSalleDeDouche">Nombre de Salles de Douche</label>
                         <input type="number" class="form-control" id="nbSalleDeDouche" name="nbSalleDeDouche"
-                            value="{{ old('nbSalleDeDouche') }}" >
+                            value="{{ old('nbSalleDeDouche') }}">
                     </div>
 
                     <!-- Checkboxes -->
@@ -118,7 +118,7 @@
                     <div class="form-group">
                         <label for="localite">Localité</label>
                         <input type="text" class="form-control" id="localite" name="localite"
-                            value="{{ old('localite') }}" >
+                            value="{{ old('localite') }}">
                     </div>
 
                     <!-- Title Deed -->
@@ -132,7 +132,7 @@
                     <div class="form-group">
                         <label for="localisation">Localisation (Latitude, Longitude)</label>
                         <input type="text" class="form-control" id="localisation" name="localisation"
-                            value="{{ old('localisation') }}" >
+                            value="{{ old('localisation') }}">
                     </div>
 
                     <!-- Details -->
@@ -147,7 +147,7 @@
                         <select class="form-control" id="typeTransaction" name="typeTransaction" required>
                             <option value="A vendre" {{ old('typeTransaction') == 'A vendre' ? 'selected' : '' }}>A vendre
                             </option>
-                            <option value="A louer" {{ old('typeTransaction') == 'A louer' ? 'selected' : '' }}>Au louer
+                            <option value="A louer" {{ old('typeTransaction') == 'A louer' ? 'selected' : '' }}>A louer
                             </option>
                         </select>
                     </div>
@@ -159,13 +159,13 @@
                             value="{{ old('visite360') }}">
                     </div>
 
-                     <!--
-                    <div class="form-group">
-                        <label for="video">Vidéo (URL)</label>
-                        <input type="url" class="form-control" id="video" name="video"
-                            value="{{ old('video') }}" desabled>
-                    </div>
-                -->
+                    <!--
+                        <div class="form-group">
+                            <label for="video">Vidéo (URL)</label>
+                            <input type="url" class="form-control" id="video" name="video"
+                                value="{{ old('video') }}" desabled>
+                        </div>
+                    -->
 
                     <div class="form-group">
                         <label for="image">Image</label>

@@ -86,14 +86,19 @@
                                         <td>{{ $annonce->video }}</td>
                                         <td>
                                             @if ($annonce->image)
-                                            <img src="{{ asset('storage/' . $annonce->image) }}" alt="Image Annonce" width="50">
+                                                <img src="{{ asset('uploads/annonces/' . $annonce->image) }}" alt="Image Annonce" width="50">
                                             @else
                                                 Aucun
                                             @endif
                                         </td>
 
+
                                         <td>{{ $annonce->validee ? 'Oui' : 'Non' }}</td>
-                                        <td class="text-right">  <!-- Aligner les boutons à droite -->
+                                        <td class="text-right"> 
+                                             <!-- Lien pour l'édition -->
+                                             <a href="{{ route('annonce.edit', $annonce->annonce_id) }}" class="btn btn-warning btn-sm ml-2">
+                                                <i class="fa fa-edit"></i>  <!-- Icone d'édition -->
+                                            </a>
                                             <!-- Formulaire pour Supprimer -->
                                             <form action="{{ route('annonces.destroy', $annonce->annonce_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
                                                 @csrf
@@ -103,6 +108,7 @@
                                                 </button>
                                             </form>
                                         </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Annonce;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -10,6 +11,14 @@ class UserController extends Controller
     {
         return view('Layout.Backend.User_dashboard.index');
     }
+
+
+
+
+
+
+
+
     public function filtrePage()
     {
         return view('Layout.Frontend..filtre-page');

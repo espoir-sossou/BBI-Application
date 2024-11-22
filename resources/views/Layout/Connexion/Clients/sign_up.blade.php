@@ -6,7 +6,7 @@
 
     <div class="container-fluid mt-3 p-0">
         <div class="row mt-3"
-            style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6)), url('Frontend/Home/assets/imgs/aub25.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 120vh; display: flex; align-items: center; justify-content: space-between; padding: 20px; color: #fff; ">
+            style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6)), url('{{ asset('Frontend/Home/assets/imgs/aub25.jpg') }}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 130vh; display: flex; align-items: center; justify-content: space-between; padding: 20px; color: #fff; ">
 
             <div class="col-md-12" style="margin-top: -50px;">
                 <div class="containair">
@@ -65,7 +65,6 @@
                                 <div class="form-group mb-3">
                                     <label for="role" class="form-label text-dark">Rôle</label>
                                     <select name="role" id="role" class="form-control" style="border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
-                                        <option value="ACHETEUR" {{ old('role') == 'ACHETEUR' ? 'selected' : '' }}>Acheteur</option>
                                         <option value="VENDEUR" {{ old('role') == 'VENDEUR' ? 'selected' : '' }}>Vendeur</option>
                                         <option value="AGENCE" {{ old('role') == 'AGENCE' ? 'selected' : '' }}>Agence</option>
                                         <option value="USER" {{ old('role') == 'USER' ? 'selected' : '' }}>Simple Utilisateur</option>

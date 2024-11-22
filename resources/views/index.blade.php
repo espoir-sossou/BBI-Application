@@ -6,7 +6,7 @@
             @foreach ($offresEnVedette as $index => $offre)
                 <div class="carousel-item h-100 {{ $index === 0 ? 'active' : '' }}">
                     @if ($offre->image)
-                        <img src="{{ asset('storage/' . $offre->image) }}" class="d-block w-100 h-100"
+                        <img src="{{ asset('uploads/annonces/' . $offre->image) }}" class="d-block w-100 h-100"
                             style="object-fit: cover; transition: opacity 1s ease-in-out;" alt="Image de l'offre en vedette">
                     @else
                         <img src="Frontend/Home/assets/imgs/default.jpg" class="d-block w-100 h-100"
@@ -91,10 +91,12 @@ border-radius: 5px; /* Coins arrondis pour un style moderne */
                         @foreach ($annonces as $annonce)
                             <div class="col-lg-4 col-md-6 align-self-center mb-30 properties-items">
                                 <div class="item">
-                                    <a href="property-details.html">
-                                        <img src="{{ asset('storage/' . $annonce->image) }}" alt="Image Annonce"
-                                            style="max-width: 400px;">
+                                    <a href="{{ route('annonce.details', $annonce->annonce_id) }}">
+                                        <img src="{{ asset('uploads/annonces/' . $annonce->image) }}" alt="Image Annonce" style="max-width: 400px;">
                                     </a>
+
+
+
                                     <span class="category"
                                         style="
                                     background-color: {{ $annonce->typeTransaction === 'A louer' ? 'green' : ($annonce->typeTransaction === 'A vendre' ? '#17a2b8' : 'transparent') }};
@@ -107,7 +109,7 @@ border-radius: 5px; /* Coins arrondis pour un style moderne */
                                     </span>
                                     <h6>{{ number_format($annonce->montant, 0, ',', ' ') }} XOF</h6>
                                     <h4>
-                                        <a href="property-details.html">{{ $annonce->titre }}</a>
+                                        <a href="{{ route('annonce.details', $annonce->annonce_id) }}">{{ $annonce->titre }}</a>
                                     </h4>
                                     <ul>
                                         <li>nbr Chambres : <span>{{ $annonce->nbChambres }}</span></li>
