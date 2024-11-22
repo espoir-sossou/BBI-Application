@@ -23,7 +23,12 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ $annonce->titre }}</h5>
                             <p class="card-text">{{ number_format($annonce->montant, 0, ',', ' ') }} XOF</p>
-                            <a href="{{ route('annonce.details', $annonce->annonce_id) }}" class="btn btn-info">Voir les détails</a>
+                            <a href="#"
+                                class="btn btn-sm mt-2"
+                                style="background-color: {{ $annonce->typeTransaction === 'A louer' ? '#318093' : '#318093' }}; color: white;">
+                                {{ $annonce->typeTransaction }}
+                             </a>
+
 
                             <!-- Bouton pour supprimer l'annonce du panier -->
                             <form action="{{ route('panier.supprimer', $annonce->annonce_id) }}" method="POST" style="display:inline;">
