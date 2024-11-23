@@ -100,7 +100,8 @@ class AuthController extends Controller
         // Déterminer l'URL de redirection en fonction du rôle
         $redirectUrl = match ($user->role) {
             'ADMIN' => route('admin.dashboard'),
-            'AGENCE', 'VENDEUR' => $this->getDashboardUrlForAgenceVendeur($user),
+            'AGENCE' => route('agence.dashboard'),
+            'VENDEUR' => route('vendeur.dashboard'),
             'USER' => route('homePage'),
             default => route('loginPage'),
         };
@@ -116,41 +117,6 @@ class AuthController extends Controller
         // Rediriger l'utilisateur vers la page correspondante
         return redirect($redirectUrl);
     }
-
-    /**
-     * Récupérer l'URL du tableau de bord pour les rôles AGENCE et VENDEUR
-     */
-    private function getDashboardUrlForAgenceVendeur($user)
-    {
-        // Vérifier si l'utilisateur a déjà un tableau de bord
-        $dashboard = Dashboard::where('user_id', $user->user_id)->first();
-
-        // Si le tableau de bord n'existe pas, en créer un vide
-        if (!$dashboard) {
-            $dashboard = new Dashboard([
-                'user_id' => $user->user_id,
-                'content' => 'Tableau de bord vide',  // Par défaut, le contenu peut être "vide" ou une autre valeur
-            ]);
-            $dashboard->save();  // Sauvegarder le tableau de bord dans la base de données
-        }
-
-        // Rediriger vers le tableau de bord de l'utilisateur en fonction du rôle
-        $dashboardUrl = route('loginPage');  // URL par défaut
-
-        if ($user->role === 'AGENCE') {
-            // Rediriger vers un tableau de bord spécifique à l'AGENCE
-            $dashboardUrl = route('agence.dashboard');
-        } elseif ($user->role === 'VENDEUR') {
-            // Rediriger vers un tableau de bord spécifique au VENDEUR
-            $dashboardUrl = route('vendeur.dashboard');
-        }
-
-        return $dashboardUrl;
-    }
-
-
-
-
 
     public function logout(Request $request)
     {
@@ -384,6 +350,20 @@ class AuthController extends Controller
         // Rediriger l'utilisateur vers la page de connexion
         return redirect()->route('loginPage')->with('success', 'Vous êtes maintenant déconnecté.');
     }
+    public function authDashboardLogout(Request $request)
+    {
+        // Effacer les informations de l'utilisateur de la session
+        $request->session()->forget('user_id');
+        $request->session()->forget('user_role');
+        $request->session()->forget('user'); // Si tu as des informations supplémentaires stockées
+
+        // Optionnellement, on peut aussi détruire complètement la session
+        $request->session()->flush();
+
+        // Rediriger l'utilisateur vers la page de connexion
+        return redirect()->route('loginPage')->with('success', 'Vous êtes maintenant déconnecté.');
+    }
+
 
 
 

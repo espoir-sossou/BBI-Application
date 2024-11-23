@@ -4,7 +4,7 @@
     <div class="container mt-4">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Créer une nouvelle annonce</h2>
+                <h2 class="mb-0">Créer une nouvelle Offres en vedette</h2>
             </div>
             <div class="card-body">
                 @if (session('success'))

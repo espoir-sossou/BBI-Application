@@ -57,6 +57,8 @@ Route::get('/signup-confirmation', [AuthController::class, 'signupConfirmation']
 Route::post('/login-post', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/auth-logout', [AuthController::class, 'authLogout'])->name('authLogout');
+Route::get('/auth-dashboard-logout', [AuthController::class, 'authDashboardLogout'])->name('auth.dashboard.Logout');
+
 
 
 

@@ -193,7 +193,7 @@
                      Activity Log
                  </a>
                  <div class="dropdown-divider"></div>
-                 <a class="dropdown-item" href="{{ route('authLogout') }}" data-toggle="modal" data-target="#logoutModal">
+                 <a class="dropdown-item" href="{{ route('auth.dashboard.Logout') }}" data-toggle="modal" data-target="#LogoutModal">
                      <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                      Logout
                  </a>

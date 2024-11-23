@@ -146,10 +146,30 @@ class AgenceController extends Controller
     }
     public function annonceListe()
     {
-        $annonces = Annonce::all(); // Récupérer toutes les annonces
-        return view('Layout.Backend.Agence_dashboard.annonce-liste', compact('annonces'));
-    }
-    public function destroyAnnonce($id)
+        // Récupérer les informations de l'utilisateur connecté
+        $userId = session('user_id');
+        $userRole = session('user_role');
+
+        // Vérifier si l'utilisateur est connecté
+        if (!$userId || !$userRole) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour accéder à cette page.']);
+        }
+
+        // Filtrer les annonces en fonction du rôle
+        $annonces = match ($userRole) {
+            'ADMIN' => Annonce::all(), // Un admin peut voir toutes les annonces
+            'AGENCE' => Annonce::where('user_id', $userId)->get(), // Une agence voit ses propres annonces
+            'VENDEUR' => Annonce::where('user_id', $userId)->get(), // Un vendeur voit ses propres annonces
+            default => [],
+        };
+
+       // Déterminer s'il y a des annonces pour ce rôle
+    $hasAnnonces = !$annonces->isEmpty();
+
+        // Retourner la vue avec les annonces filtrées
+        return view('Layout.Backend.Agence_dashboard.annonce-liste', compact('annonces', 'hasAnnonces', 'userRole'));
+        }
+        public function destroyAnnonce($id)
     {
         // Trouver l'annonce par son ID
         $annonce = Annonce::findOrFail($id);
@@ -356,10 +376,30 @@ class AgenceController extends Controller
         return redirect()->route('offreEnVedette.liste')->with('success', 'Annonce créée avec succès !');
     }
     public function offreEnVedetteListe()
-    {
-        $OffreEnVedette = OffreEnVedette::all(); // Récupérer toutes les OffreEnVedette
-        return view('Layout.Backend.Agence_dashboard.Offre_en_vedette.annonce-liste', compact('OffreEnVedette'));
+{
+    // Récupérer les informations de l'utilisateur connecté
+    $userId = session('user_id');
+    $userRole = session('user_role');
+
+    // Vérifier si l'utilisateur est connecté
+    if (!$userId || !$userRole) {
+        return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour accéder à cette page.']);
     }
+
+    // Filtrer les offres en fonction du rôle
+    $offresEnVedette = match ($userRole) {
+        'ADMIN' => OffreEnVedette::all(), // Un admin peut voir toutes les offres
+        'AGENCE', 'VENDEUR' => OffreEnVedette::where('user_id', $userId)->get(), // Une agence/vendeur voit ses propres offres
+        default => [],
+    };
+
+    // Vérifier si des offres existent pour ce rôle
+    $hasOffres = !$offresEnVedette->isEmpty();
+
+    // Retourner la vue avec les données filtrées
+    return view('Layout.Backend.Agence_dashboard.Offre_en_vedette.annonce-liste', compact('offresEnVedette', 'hasOffres', 'userRole'));
+}
+
     public function offreEnVedetteditPage($annonce_id)
     {
         // Récupérer l'annonce par son ID
