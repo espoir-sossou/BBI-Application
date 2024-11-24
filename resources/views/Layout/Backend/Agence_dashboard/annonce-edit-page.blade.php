@@ -98,7 +98,7 @@
             <div>
                 @if($annonce->image)
                     <!-- Si l'annonce a déjà une image, la prévisualiser -->
-                    <img id="imagePreview" src="{{ asset('storage/' . $annonce->image) }}" alt="Preview" class="mt-2" style="max-width: 100px;">
+                    <img id="imagePreview" src="{{ asset('uploads/annonces/' . $annonce->image) }}" alt="Preview" class="mt-2" style="max-width: 100px;">
                 @else
                     <img id="imagePreview" src="#" alt="Preview" class="mt-2" style="max-width: 100px; display: none;">
                 @endif

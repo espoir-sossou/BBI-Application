@@ -93,7 +93,7 @@
                                             <td>{{ $offre->video }}</td>
                                             <td>
                                                 @if ($offre->image)
-                                                    <img src="{{ asset('uploads/offres/' . $offre->image) }}" alt="Image Offre" width="50">
+                                                <img src="{{ asset('uploads/annonces/' . $offre->image) }}" alt="Image Annonce" width="50">
                                                 @else
                                                     Aucun
                                                 @endif
