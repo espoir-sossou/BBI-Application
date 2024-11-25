@@ -93,8 +93,7 @@
                                             <td>{{ $annonce->video }}</td>
                                             <td>
                                                 @if ($annonce->image)
-                                                    {{-- Affiche le chemin généré --}}
-                                                    {{ dd(Storage::disk('annonces')->url($annonce->image)) }}
+                                                    
                                                     <img src="{{ Storage::disk('annonces')->url($annonce->image) }}" alt="Image Annonce" width="50">
                                                 @else
                                                     Aucun
