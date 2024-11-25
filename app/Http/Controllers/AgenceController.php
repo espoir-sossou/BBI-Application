@@ -72,12 +72,11 @@ class AgenceController extends Controller
             'video' => 'nullable|string|max:255',
             'image' => 'required|file|mimes:jpeg,png,gif|max:2048',
         ]);
-
-        // Enregistrer l'image si elle est présente
+        
         if ($request->hasFile('image')) {
-            // Utilisation du disque personnalisé 'annonces' pour stocker l'image
-            $imagePath = $request->file('image')->store('images', 'annonces');
-            $validatedData['image'] = $imagePath; // Stocker le chemin de l'image
+            // Enregistre l'image dans le dossier configuré par le disque 'annonces'
+            $imagePath = $request->file('image')->store('', 'annonces'); // Supprime 'images/' du chemin
+            $validatedData['image'] = $imagePath; // Enregistre uniquement le nom du fichier
         }
 
         // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
