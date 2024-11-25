@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Mail\NewOffreEnVedetteCreatedMail;
 
 
+
 class AgenceController extends Controller
 {
     public function agenceDashboard()
@@ -73,10 +74,25 @@ class AgenceController extends Controller
             'video' => 'nullable|string|max:255',
             'image' => 'required|file|mimes:jpeg,png,gif|max:2048',
         ]);
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('', 'annonces');
-            $validatedData['image'] = $imagePath;
+            $image = $request->file('image');
+            $path = $image->store('', 'annonces');
+
+            // Récupération manuelle du chemin complet et de l'URL
+            $fullPath = public_path('uploads/annonces/' . $path);
+            $url = env('APP_URL') . '/uploads/annonces/' . $path;
+
+            dd([
+                'image_path' => $path,
+                'full_path' => $fullPath,
+                'url' => $url,
+            ]);
+
+            $validatedData['image'] = $path;
         }
+
+
 
 
         // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
