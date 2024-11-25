@@ -55,7 +55,7 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
-        
+
         'annonces' => [
             'driver' => 'local',  // Utilisation du système de fichiers local
             'root' => public_path('uploads/annonces'),  // Chemin vers le dossier uploads/annonces
