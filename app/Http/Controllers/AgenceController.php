@@ -76,7 +76,6 @@ class AgenceController extends Controller
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('', 'annonces');
             $validatedData['image'] = $imagePath;
-            dd(Storage::disk('annonces')->exists($imagePath)); // Vérifie si le fichier est sauvegardé
         }
 
 

@@ -93,11 +93,13 @@
                                             <td>{{ $annonce->video }}</td>
                                             <td>
                                                 @if ($annonce->image)
-                                                    <img src="{{ asset('uploads/annonces/' . $annonce->image) }}" alt="Image Annonce" width="50">
+                                                    <p>{{ Storage::disk('annonces')->url($annonce->image) }}</p>
+                                                    <img src="{{ Storage::disk('annonces')->url($annonce->image) }}" alt="Image Annonce" width="50">
                                                 @else
                                                     Aucun
                                                 @endif
                                             </td>
+
 
 
 
