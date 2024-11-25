@@ -11,6 +11,7 @@ use App\Models\OffreEnVedette;
 use App\Mail\NewAnnonceCreatedMail;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use App\Mail\NewOffreEnVedetteCreatedMail;
 
 
@@ -72,12 +73,12 @@ class AgenceController extends Controller
             'video' => 'nullable|string|max:255',
             'image' => 'required|file|mimes:jpeg,png,gif|max:2048',
         ]);
-        
         if ($request->hasFile('image')) {
-            // Enregistre l'image dans le dossier configuré par le disque 'annonces'
-            $imagePath = $request->file('image')->store('', 'annonces'); // Supprime 'images/' du chemin
-            $validatedData['image'] = $imagePath; // Enregistre uniquement le nom du fichier
+            $imagePath = $request->file('image')->store('', 'annonces');
+            $validatedData['image'] = $imagePath;
+            dd(Storage::disk('annonces')->exists($imagePath)); // Vérifie si le fichier est sauvegardé
         }
+
 
         // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
         $validatedData['veranda'] = $validatedData['veranda'] ?? 0;
