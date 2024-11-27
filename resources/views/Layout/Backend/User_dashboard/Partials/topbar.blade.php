@@ -193,10 +193,9 @@
                      Activity Log
                  </a>
                  <div class="dropdown-divider"></div>
-                 <!-- Lien de déconnexion -->
-                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                 <a class="dropdown-item" href="{{ route('authLogout') }}" data-toggle="modal" data-target="#logoutModal">
                      <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                     Déconnexion
+                     Logout
                  </a>
              </div>
          </li>

@@ -5,9 +5,11 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgenceController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VendeurController;
 use App\Http\Controllers\AcheteurController;
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\auth\GoogleController;
 use App\Http\Controllers\NotificationController;
 
 /*
@@ -89,6 +91,9 @@ Route::get('/auth/google/login', [AuthController::class, 'googleLogin'])->name('
 Route::get('/signup-page', [AuthController::class, 'signUpPage'])->name('signUpPage');
 Route::post('/sign-up', [AuthController::class, 'handleSignup'])->name('handleSignup');
 
+Route::get('login/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('login/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
 // Route de déconnexion, accessible uniquement aux utilisateurs authentifiés
 // Route::post('/user-logout', [AuthController::class, 'handleLogout'])->name('user.logout');
 
@@ -168,10 +173,15 @@ Route::middleware(['no-back-history',])->group(function () {
     Route::get('/acheteur/chart', [AcheteurController::class, 'acheteurChart'])->name('acheteur.chart');
 
     // Routes de l'utilisateur standard
-    Route::get('/user/dashboard', [UserController::class, 'userDashboard'])->name('user.dashboard');
-    Route::get('/user/table', [UserController::class, 'userTable'])->name('user.table');
+    Route::get('/user/dashboard', [UserController::class, 'userDashboard'])->name('user.dashboards');
+    Route::get('/user/dashboard', [UserController::class, 'redirectToDashboard'])->name('user.dashboard');
     Route::get('/user/chart', [UserController::class, 'userChart'])->name('user.chart');
     Route::get('/filtre-page', [UserController::class, 'filtrePage'])->name('filtre.page');
+    Route::get('/user/table', [UserController::class, 'userTable'])->name('user.table');
+
+    Route::get('/messages/{receiver_id}', [MessageController::class, 'chat'])->name('messages.chat');
+    Route::post('/messages/{receiver_id}', [MessageController::class, 'sendMessage'])->name('messages.send');
+
 
 
 });

@@ -8,23 +8,22 @@ use App\Models\Panier;
 use App\Models\Annonce;
 use Illuminate\Http\Request;
 use App\Models\OffreEnVedette;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {// Dans le contrôleur Laravel
     public function homePage(Request $request)
     {
-        // Vérifier si l'utilisateur est connecté et si le rôle est 'USER'
-        $userId = session('user_id');
-        $userRole = session('user_role');
+        // Récupérer l'utilisateur connecté (s'il y en a un)
+        $user = Auth::user();
 
-        // Récupérer les informations de l'utilisateur depuis la session
-        if ($userId && $userRole && $userRole === 'USER') {
-            // L'utilisateur est connecté et son rôle est 'USER'
-            $userData = session(['user' => ['user_id' => $userId, 'role' => $userRole]]);
-        } else {
-            // Sinon, on peut rediriger vers la page de connexion ou afficher sans utilisateur
-            $userData = null;
-        }
+        // Préparer les données utilisateur si connecté
+        $userData = $user ? [
+            'user_id' => $user->id,
+            'role' => $user->role,
+            'nom' => $user->nom,
+            'prenom' => $user->prenom,
+        ] : null;
 
         // Récupérer les annonces validées
         $annonces = Annonce::where('validee', 1)->get();
@@ -32,13 +31,14 @@ class HomeController extends Controller
         // Récupérer les offres en vedette validées
         $offresEnVedette = OffreEnVedette::where('validee', 1)->get();
 
-        // Afficher la page d'accueil avec ou sans les informations de l'utilisateur
+        // Afficher la page d'accueil avec les données utilisateur et les autres éléments
         return view('index', [
             'user' => $userData,
             'annonces' => $annonces,
-            'offresEnVedette' => $offresEnVedette
+            'offresEnVedette' => $offresEnVedette,
         ]);
     }
+
 
     public function offre(Request $request)
     {
@@ -77,139 +77,159 @@ class HomeController extends Controller
 
     public function ajouterAuPanier($annonce_id)
     {
-        // Vérification de l'existence de l'utilisateur connecté dans la session
-        $userId = session('user_id');
-        $userRole = session('user_role');
-
-        // Si l'utilisateur n'est pas trouvé dans la session, rediriger vers la page de connexion
-        if (!$userId || !$userRole) {
-            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour ajouter une annonce au panier.']);
+        // Vérifiez si l'utilisateur est connecté via Google
+        if (!Auth::check()) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter avec Google pour ajouter une annonce au panier.']);
         }
 
-        // Récupérer l'utilisateur en fonction de l'ID de la session
-        $user = User::where('user_id', $userId)->first();
+        // Récupérez l'utilisateur authentifié
+        $user = Auth::user();
 
-        // Vérification de l'existence de l'annonce
-        $annonce = Annonce::find($annonce_id);
-
-        if (!$annonce) {
-            return redirect()->back()->withErrors(['error' => 'Annonce non trouvée.']);
-        }
-
-        // Vérifier si l'annonce est déjà dans le panier de l'utilisateur
-        $panier = Panier::where('user_id', $userId)->where('annonce_id', $annonce_id)->first();
-
-        if ($panier) {
-            // Si l'annonce est déjà dans le panier, on ne l'ajoute pas de nouveau
-            return redirect()->route('panier')->with('message', 'Cette annonce est déjà dans votre panier.');
-        } else {
-            // Ajouter l'annonce au panier
-            Panier::create([
-                'user_id' => $userId,
-                'annonce_id' => $annonce_id,
-            ]);
-        }
-
-        // Rediriger vers la page du panier avec un message de succès
-        return redirect()->route('panier')->with('success', 'Annonce ajoutée au panier.');
-    }
-    public function afficherPanier()
-    {
-        // Vérification de l'existence de l'utilisateur connecté dans la session
-        $userId = session('user_id');
-        $userRole = session('user_role');
-
-        // Si l'utilisateur n'est pas trouvé dans la session, rediriger vers la page de connexion
-        if (!$userId || !$userRole) {
-            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour voir votre panier.']);
-        }
-
-        // Récupérer l'utilisateur en fonction de l'ID de la session
-        $user = User::where('user_id', $userId)->first();
-
-        // Si l'utilisateur n'existe pas, rediriger vers la page de connexion
+        // Vérifiez si l'utilisateur est valide
         if (!$user) {
             return redirect()->route('loginPage')->withErrors(['error' => 'Utilisateur non trouvé.']);
         }
 
-        // Récupérer toutes les annonces dans le panier de l'utilisateur connecté
-        $panierItems = Panier::where('user_id', $userId)->get();
-
-        // Vérifier si le panier est vide
-        if ($panierItems->isEmpty()) {
-            return view('Layout.Frontend.Annonce.panier', ['annonces' => [], 'message' => 'Votre panier est vide.']);
+        // Vérifiez si l'annonce existe
+        $annonce = Annonce::find($annonce_id);
+        if (!$annonce) {
+            return redirect()->back()->withErrors(['error' => 'Annonce non trouvée.']);
         }
 
-        // Extraire les annonces associées aux éléments du panier
+        // Vérifiez si l'annonce est déjà dans le panier
+        $panier = Panier::where('user_id', $user->user_id)->where('annonce_id', $annonce_id)->first();
+        if ($panier) {
+            return redirect()->route('panier')->with('message', 'Cette annonce est déjà dans votre panier.');
+        }
+
+        // Ajoutez l'annonce au panier
+        Panier::create([
+            'user_id' => $user->user_id,
+            'annonce_id' => $annonce_id,
+        ]);
+
+        return redirect()->route('panier')->with('success', 'Annonce ajoutée au panier.');
+    }
+
+
+    public function afficherPanier()
+    {
+        // Vérifiez si l'utilisateur est connecté via Google
+        if (!Auth::check()) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour accéder à votre panier.']);
+        }
+
+        // Récupérez l'utilisateur authentifié
+        $user = Auth::user();
+
+        // Vérifiez si l'utilisateur est valide
+        if (!$user) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Utilisateur non trouvé.']);
+        }
+
+        // Récupérez les annonces dans le panier pour cet utilisateur
+        $panierItems = Panier::where('user_id', $user->user_id)->get();
+
+        // Si le panier est vide
+        if ($panierItems->isEmpty()) {
+            return view('Layout.Frontend.Annonce.panier', [
+                'annonces' => [],
+                'message' => 'Votre panier est vide.',
+            ]);
+        }
+
+        // Récupérer les annonces associées aux éléments du panier
         $annonces = $panierItems->map(function ($item) {
-            return $item->annonce; // Relation avec le modèle Annonce
+            return $item->annonce; // Supposant une relation entre Panier et Annonce
         });
 
         // Retourner la vue avec les annonces dans le panier
-        return view('Layout.Frontend.Annonce.panier', ['annonces' => $annonces]);
+        return view('Layout.Frontend.Annonce.panier', [
+            'annonces' => $annonces,
+            'message' => null,
+        ]);
     }
+
+
     // Méthode pour supprimer une annonce du panier
     public function supprimerDuPanier($annonce_id)
     {
-        // Vérification de l'existence de l'utilisateur connecté dans la session
-        $userId = session('user_id');
-        $userRole = session('user_role');
-
-        // Si l'utilisateur n'est pas trouvé dans la session, rediriger vers la page de connexion
-        if (!$userId || !$userRole) {
+        // Vérifiez si l'utilisateur est connecté via Google
+        if (!Auth::check()) {
             return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour gérer votre panier.']);
         }
 
+        // Récupérez l'utilisateur authentifié
+        $user = Auth::user();
+
+        // Vérifiez si l'utilisateur est valide
+        if (!$user) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Utilisateur non trouvé.']);
+        }
+
+        // Vérifiez si l'annonce existe dans le panier de l'utilisateur
+        $panierItem = Panier::where('user_id', $user->user_id)->where('annonce_id', $annonce_id)->first();
+
+        if (!$panierItem) {
+            return redirect()->route('panier')->withErrors(['error' => 'L\'annonce n\'est pas présente dans votre panier.']);
+        }
+
         // Supprimer l'annonce du panier
-        Panier::where('user_id', $userId)->where('annonce_id', $annonce_id)->delete();
+        $panierItem->delete();
 
         // Rediriger vers la page du panier avec un message de succès
         return redirect()->route('panier')->with('success', 'Annonce supprimée du panier.');
     }
 
+
     public function ajouterAuxFavoris($annonce_id)
     {
-        $userId = session('user_id');
-        $userRole = session('user_role');
-
-        if (!$userId || !$userRole) {
+        // Vérifiez si l'utilisateur est connecté
+        if (!Auth::check()) {
             return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour ajouter une annonce à vos favoris.']);
         }
 
-        $annonce = Annonce::find($annonce_id);
+        // Récupérez l'utilisateur authentifié
+        $user = Auth::user();
 
+        // Vérifiez si l'annonce existe
+        $annonce = Annonce::find($annonce_id);
         if (!$annonce) {
             return redirect()->back()->withErrors(['error' => 'Annonce non trouvée.']);
         }
 
-        $favori = Favori::where('user_id', $userId)->where('annonce_id', $annonce_id)->first();
-
+        // Vérifiez si l'annonce est déjà dans les favoris
+        $favori = Favori::where('user_id', $user->user_id)->where('annonce_id', $annonce_id)->first();
         if ($favori) {
             return redirect()->route('favoris')->with('message', 'Cette annonce est déjà dans vos favoris.');
-        } else {
-            Favori::create([
-                'user_id' => $userId,
-                'annonce_id' => $annonce_id,
-            ]);
         }
+
+        // Ajouter l'annonce aux favoris
+        Favori::create([
+            'user_id' => $user->user_id,
+            'annonce_id' => $annonce_id,
+        ]);
 
         return redirect()->route('favoris')->with('success', 'Annonce ajoutée à vos favoris.');
     }
     public function afficherFavoris()
     {
-        $userId = session('user_id');
-        $userRole = session('user_role');
-
-        if (!$userId || !$userRole) {
+        // Vérifiez si l'utilisateur est connecté
+        if (!Auth::check()) {
             return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour voir vos favoris.']);
         }
 
-        $favorisItems = Favori::where('user_id', $userId)->get();
+        // Récupérez l'utilisateur authentifié
+        $user = Auth::user();
+
+        // Récupérez les favoris de l'utilisateur
+        $favorisItems = Favori::where('user_id', $user->user_id)->get();
 
         if ($favorisItems->isEmpty()) {
-            return view('favoris', ['annonces' => [], 'message' => 'Vous n\'avez pas encore ajouté de favoris.']);
+            return view('Layout.Frontend.Annonce.favoris', ['annonces' => [], 'message' => 'Vous n\'avez pas encore ajouté de favoris.']);
         }
 
+        // Récupérer les annonces associées aux éléments des favoris
         $annonces = $favorisItems->map(function ($item) {
             return $item->annonce;
         });
@@ -218,18 +238,27 @@ class HomeController extends Controller
     }
     public function supprimerDesFavoris($annonce_id)
     {
-        $userId = session('user_id');
+        // Vérifiez si l'utilisateur est connecté
+        if (!Auth::check()) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour gérer vos favoris.']);
+        }
 
-        $favori = Favori::where('user_id', $userId)->where('annonce_id', $annonce_id)->first();
+        // Récupérez l'utilisateur authentifié
+        $user = Auth::user();
+
+        // Vérifiez si l'annonce existe dans les favoris de l'utilisateur
+        $favori = Favori::where('user_id', $user->user_id)->where('annonce_id', $annonce_id)->first();
 
         if (!$favori) {
             return redirect()->route('favoris')->withErrors(['error' => 'Favori non trouvé.']);
         }
 
+        // Supprimer l'annonce des favoris
         $favori->delete();
 
         return redirect()->route('favoris')->with('success', 'Annonce supprimée des favoris.');
     }
+
 
 
 }

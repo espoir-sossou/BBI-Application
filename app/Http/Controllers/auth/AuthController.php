@@ -339,16 +339,8 @@ class AuthController extends Controller
 
     public function authLogout(Request $request)
     {
-        // Effacer les informations de l'utilisateur de la session
-        $request->session()->forget('user_id');
-        $request->session()->forget('user_role');
-        $request->session()->forget('user'); // Si tu as des informations supplémentaires stockées
-
-        // Optionnellement, on peut aussi détruire complètement la session
-        $request->session()->flush();
-
-        // Rediriger l'utilisateur vers la page de connexion
-        return redirect()->route('loginPage')->with('success', 'Vous êtes maintenant déconnecté.');
+        Auth::logout(); // Déconnecte l'utilisateur
+    return redirect()->route('loginPage'); // Redirige vers la page de connexion
     }
     public function authDashboardLogout(Request $request)
     {

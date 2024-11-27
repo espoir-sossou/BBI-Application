@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Annonce;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -12,7 +13,31 @@ class UserController extends Controller
         return view('Layout.Backend.User_dashboard.index');
     }
 
+    public function redirectToDashboard()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
 
+            // Stocker les informations de l'utilisateur dans la session
+            session([
+                'user' => [
+                    'id' => $user->id,
+                    'nom' => $user->nom,
+                    'prenom' => $user->prenom,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                ],
+            ]);
+
+            // Rediriger vers la vue du tableau de bord
+            return view('Layout.Backend.User_dashboard.index', [
+                'user' => $user,
+            ]);
+        }
+
+        // Si l'utilisateur n'est pas connecté, redirigez vers la page de connexion
+        return redirect()->route('loginPage')->withErrors('Vous devez être connecté pour accéder au tableau de bord.');
+    }
 
 
 

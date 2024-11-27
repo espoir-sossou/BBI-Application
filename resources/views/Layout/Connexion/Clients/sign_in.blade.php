@@ -10,6 +10,12 @@
 
             <div class="col-md-12" style="margin-top: -50px;">
                 <div class="containair">
+                    @if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
                     <div class="row d-flex align-items-center justify-content-center" style="height: 80vh;">
                         <div class="col-md-3"></div>
                         <div class="col-md-6 p-5"
@@ -83,7 +89,7 @@
 
                                 <!-- Bouton Se connecter avec Google -->
                                 <div class="text-center">
-                                    <a href="#" class="btn btn-outline-primary"
+                                    <a href="{{ route('login.google') }}" class="btn btn-outline-primary"
                                         style="font-size: 18px; padding: 10px 20px; color: #318093; border-color: #318093;">
                                         <img src="Frontend/Home/assets/imgs/google.png" alt="Google"
                                             style="width: 30px; height: auto; margin-right: 10px;"> Se connecter avec Google

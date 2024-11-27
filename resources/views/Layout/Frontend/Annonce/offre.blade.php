@@ -10,10 +10,13 @@
                         @foreach ($annonces as $annonce)
                             <div class="col-lg-4 col-md-6 align-self-center mb-30 properties-items">
                                 <div class="item">
-                                    <a href="{{ route('annonce.details', $annonce->annonce_id) }}">
-                                        <img src="{{ asset('uploads/annonces/' . $annonce->image) }}" alt="Image Annonce"
-                                            style="max-width: 400px;">
-                                    </a>
+                                      @php
+                                    $imagePath = $annonce->image ? Storage::url($annonce->image) : asset('Frontend/Home/assets/imgs/default.jpg');
+                                @endphp
+                                <a href="{{ route('annonce.details', $annonce->annonce_id) }}">
+                                    <img src="{{ $imagePath }}" alt="Image Annonce" style="max-width: 400px;">
+                                </a>
+
 
 
 

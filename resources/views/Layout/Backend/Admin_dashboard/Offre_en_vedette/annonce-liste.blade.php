@@ -86,7 +86,13 @@
                                         <td>{{ $OffreEnVedette->video }}</td>
                                         <td>
                                             @if ($OffreEnVedette->image)
-                                                <img src="{{ asset('uploads/annonces/' . $OffreEnVedette->image) }}" alt="Image Annonce" width="50">
+                                                @php
+                                                    // Vérifier si l'image existe dans le disque public
+                                                    $imageUrl = Storage::disk('public')->exists($OffreEnVedette->image)
+                                                        ? Storage::disk('public')->url($OffreEnVedette->image)
+                                                        : asset('default-image.jpg'); // Image par défaut
+                                                @endphp
+                                                <img src="{{ $imageUrl }}" alt="Image OffreEnVedette" width="50">
                                             @else
                                                 Aucun
                                             @endif

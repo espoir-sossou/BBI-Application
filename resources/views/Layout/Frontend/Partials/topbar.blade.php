@@ -235,21 +235,21 @@
             <div class="btn-group mx-1">
                 <button type="button" class="btn btn-sm btn-light dropdown-toggle d-flex align-items-center"
                     data-toggle="dropdown">
-                    <i class="fa fa-user" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
-                    <span class="ml-2" style="color: #318093">Profil</span>
+                    <i class="fa fa-user" aria-hidden="true" style="color: #318093"></i>
+                    <span class="ml-2" style="color: #318093">
+                        @auth
+                            {{ Auth::user()->nom }} {{ Auth::user()->prenom }}
+                        @else
+                            Profil
+                        @endauth
+                    </span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    @php
-                        // Vérification de l'existence de l'utilisateur connecté dans la session
-                        $userId = session('user_id');
-                        $userRole = session('user_role');
-                    @endphp
-
-                    @if ($userId && $userRole === 'USER')
-                        <!-- Si l'utilisateur est connecté et son rôle est 'USER' -->
-                        <a href="{{ route('user.profil') }}">
+                    @auth
+                        <!-- Si l'utilisateur est connecté -->
+                        <a href="{{ route('user.dashboard') }}">
                             <button class="dropdown-item" type="button" style="color: #318093">
-                                Profil
+                                Compte
                             </button>
                         </a>
                         <form id="logout-form" action="{{ route('authLogout') }}" method="POST" style="display: none;">
@@ -259,15 +259,26 @@
                             Se déconnecter
                         </button>
                     @else
-                        <!-- Si l'utilisateur n'est pas connecté, afficher les options de connexion et inscription -->
+                        <!-- Si l'utilisateur n'est pas connecté -->
                         <a href="{{ route('loginPage') }}">
                             <button class="dropdown-item" type="button" style="color: #318093">Se connecter</button>
                         </a>
                         <a href="{{ route('signUpPage') }}">
                             <button class="dropdown-item" type="button" style="color: #318093">S'inscrire</button>
                         </a>
-                    @endif
+                    @endauth
                 </div>
+
+                <script>
+                    // Fonction de confirmation avant la déconnexion
+                    function confirmLogout(event) {
+                        if (!confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                            event.preventDefault();
+                        } else {
+                            document.getElementById('logout-form').submit();
+                        }
+                    }
+                </script>
             </div>
         </div>
     </div>
@@ -367,18 +378,18 @@
                     <div class="btn-group mx-1">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle d-flex align-items-center"
                             data-toggle="dropdown">
-                            <i class="fa fa-user" aria-hidden="true" style=" color: #318093"></i>
-                            <span class="ml-2" style="color: #318093"></span>
+                            <i class="fa fa-user" aria-hidden="true" style="color: #318093"></i>
+                            <span class="ml-2" style="color: #318093">
+                                @auth
+                                    {{ Auth::user()->nom }} {{ Auth::user()->prenom }}
+                                @else
+                                    Compte
+                                @endauth
+                            </span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            @php
-                                // Vérification de l'existence de l'utilisateur connecté dans la session
-                                $userId = session('user_id');
-                                $userRole = session('user_role');
-                            @endphp
-
-                            @if ($userId && $userRole === 'USER')
-                                <!-- Si l'utilisateur est connecté et son rôle est 'USER' -->
+                            @auth
+                                <!-- Si l'utilisateur est connecté -->
                                 <a href="{{ route('user.profil') }}">
                                     <button class="dropdown-item" type="button" style="color: #318093">
                                         Profil
@@ -391,14 +402,14 @@
                                     Se déconnecter
                                 </button>
                             @else
-                                <!-- Si l'utilisateur n'est pas connecté, afficher les options de connexion et inscription -->
+                                <!-- Si l'utilisateur n'est pas connecté -->
                                 <a href="{{ route('loginPage') }}">
                                     <button class="dropdown-item" type="button" style="color: #318093">Se connecter</button>
                                 </a>
                                 <a href="{{ route('signUpPage') }}">
                                     <button class="dropdown-item" type="button" style="color: #318093">S'inscrire</button>
                                 </a>
-                            @endif
+                            @endauth
                         </div>
 
                         <script>
@@ -411,9 +422,9 @@
                                 }
                             }
                         </script>
-
                     </div>
                 </li>
+
             </ul>
         </div>
     </div>

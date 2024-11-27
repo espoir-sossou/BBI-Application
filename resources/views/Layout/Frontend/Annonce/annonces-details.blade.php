@@ -1,17 +1,23 @@
 @extends('Layout.home')
 
 @section('content')
-    <div class="container mt-5 mb-5" >
+    <div class="container mt-5 mb-5">
         <div class="row g-4 align-items-center mb-5">
             <!-- Image de l'annonce -->
             <div class="col-md-6 d-flex justify-content-center position-relative">
-                <img src="{{ asset('uploads/annonces/' . $annonceDetail->image) }}"
-                     alt="{{ $annonceDetail->titre }}"
-                     class="img-fluid rounded shadow"
-                     style="max-height: 500px; object-fit: cover; width: 100%;">
+                @php
+                    $imagePath = $annonceDetail->image
+                        ? Storage::url($annonceDetail->image)
+                        : asset('Frontend/Home/assets/imgs/default.jpg'); // Image par défaut
+                @endphp
+
+                <img src="{{ $imagePath }}" alt="{{ $annonceDetail->titre }}" class="img-fluid rounded shadow"
+                    style="max-height: 500px; object-fit: cover; width: 100%;">
+
 
                 <!-- Icône de favoris -->
-                <form action="{{ route('ajouterAuxFavoris', $annonceDetail->annonce_id) }}" method="POST" class="favorite-icon">
+                <form action="{{ route('ajouterAuxFavoris', $annonceDetail->annonce_id) }}" method="POST"
+                    class="favorite-icon">
                     @csrf
                     <button type="submit" class="btn">
                         <i class="fa fa-heart" style="font-size: 24px; color: #318093;"></i>
