@@ -1,7 +1,7 @@
 @extends('Layout.home')
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <h2>Mon Panier</h2>
 
         @if (session('message'))
@@ -25,22 +25,72 @@
                                     : asset('Frontend/Home/assets/imgs/default.jpg'); // Image par défaut
                             @endphp
 
-                            <img src="{{ $imagePath }}" class="card-img-top" alt="{{ $annonce->titre }}">
+                            <img src="{{ $imagePath }}" class="card-img-top" alt="{{ $annonce->titre }}"
+                                style="height: 200px">
                             <div class="card-body">
                                 <h5 class="card-title">{{ $annonce->titre }}</h5>
                                 <p class="card-text">{{ number_format($annonce->montant, 0, ',', ' ') }} XOF</p>
-                                <a href="#" class="btn btn-sm mt-2"
-                                    style="background-color: {{ $annonce->typeTransaction === 'A louer' ? '#318093' : '#318093' }}; color: white;">
-                                    {{ $annonce->typeTransaction }}
-                                </a>
 
+                                <div class="d-flex align-items-center mt-2">
+                                    <span class="badge" data-bs-toggle="modal"
+                                        data-bs-target="#paymentModal{{ $annonce->annonce_id }}"
+                                        style="background-color: {{ $annonce->typeTransaction === 'A louer' ? '#318093' : ($annonce->typeTransaction === 'A vendre' ? '#4CAF50' : '#318093') }};
+                                           color: white;
+                                           cursor: pointer;">
+                                        {{ $annonce->typeTransaction === 'A vendre' ? 'Acheter' : $annonce->typeTransaction }}
+                                    </span>
 
-                                <!-- Bouton pour supprimer l'annonce du panier -->
-                                <form action="{{ route('panier.supprimer', $annonce->annonce_id) }}" method="POST"
-                                    style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm mt-2">Supprimer du panier</button>
+                                    <!-- Lien pour retirer l'annonce du panier -->
+                                    <form action="{{ route('panier.supprimer', $annonce->annonce_id) }}" method="POST"
+                                        style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <span class="text-danger ms-3" style="cursor: pointer;"
+                                            onclick="this.closest('form').submit()">
+                                            Retirer
+                                            <i class="fa fa-trash ms-1"></i>
+                                        </span>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal pour choisir le type de paiement -->
+                    <div class="modal fade" id="paymentModal{{ $annonce->annonce_id }}" tabindex="-1"
+                        aria-labelledby="paymentModalLabel{{ $annonce->annonce_id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="paymentModalLabel{{ $annonce->annonce_id }}">Options de
+                                        Paiement pour {{ $annonce->titre }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Choisissez la méthode de paiement pour cette annonce :</p>
+                                    <form action="{{ route('panier.payer', $annonce->annonce_id) }}" method="POST">
+                                        @csrf
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="payment_option"
+                                                id="paymentOption1{{ $annonce->annonce_id }}" value="total" checked>
+                                            <label class="form-check-label" for="paymentOption1{{ $annonce->annonce_id }}">
+                                                Paiement en totalité
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="payment_option"
+                                                id="paymentOption2{{ $annonce->annonce_id }}" value="installments">
+                                            <label class="form-check-label" for="paymentOption2{{ $annonce->annonce_id }}">
+                                                Paiement par tranches
+                                            </label>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Annuler</button>
+                                    <button type="submit" class="btn btn-primary">Suivant</button>
+                                </div>
                                 </form>
                             </div>
                         </div>

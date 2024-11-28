@@ -54,7 +54,7 @@ class AgenceController extends Controller
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'montant' => 'required|numeric|min:0',
+            'montant' => 'required|numeric|min:0|max:999999999.99',  // Par exemple, un plafond de 999 millions
             'typePropriete' => 'required|string|max:255',
             'superficie' => 'nullable|numeric|min:0',
             'nbChambres' => 'nullable|integer|min:0',
@@ -76,11 +76,11 @@ class AgenceController extends Controller
         ]);
 
         // Gestion de l'image
-    if ($request->hasFile('image')) {
-        $image = $request->file('image');
-        $path = $image->store('annonces', 'public'); // Enregistrement dans le disque public
-        $validatedData['image'] = $path;
-    }
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $path = $image->store('annonces', 'public'); // Enregistrement dans le disque public
+            $validatedData['image'] = $path;
+        }
 
 
 
@@ -167,13 +167,13 @@ class AgenceController extends Controller
             default => [],
         };
 
-       // Déterminer s'il y a des annonces pour ce rôle
-    $hasAnnonces = !$annonces->isEmpty();
+        // Déterminer s'il y a des annonces pour ce rôle
+        $hasAnnonces = !$annonces->isEmpty();
 
         // Retourner la vue avec les annonces filtrées
         return view('Layout.Backend.Agence_dashboard.annonce-liste', compact('annonces', 'hasAnnonces', 'userRole'));
-        }
-        public function destroyAnnonce($id)
+    }
+    public function destroyAnnonce($id)
     {
         // Trouver l'annonce par son ID
         $annonce = Annonce::findOrFail($id);
@@ -309,12 +309,12 @@ class AgenceController extends Controller
         ]);
 
 
-           // Gestion de l'image
-    if ($request->hasFile('image')) {
-        $image = $request->file('image');
-        $path = $image->store('annonces', 'public'); // Enregistrement dans le disque public
-        $validatedData['image'] = $path;
-    }
+        // Gestion de l'image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $path = $image->store('annonces', 'public'); // Enregistrement dans le disque public
+            $validatedData['image'] = $path;
+        }
         // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
         $validatedData['veranda'] = $validatedData['veranda'] ?? 0;
         $validatedData['terrasse'] = $validatedData['terrasse'] ?? 0;
@@ -379,29 +379,29 @@ class AgenceController extends Controller
         return redirect()->route('offreEnVedette.liste')->with('success', 'Annonce créée avec succès !');
     }
     public function offreEnVedetteListe()
-{
-    // Récupérer les informations de l'utilisateur connecté
-    $userId = session('user_id');
-    $userRole = session('user_role');
+    {
+        // Récupérer les informations de l'utilisateur connecté
+        $userId = session('user_id');
+        $userRole = session('user_role');
 
-    // Vérifier si l'utilisateur est connecté
-    if (!$userId || !$userRole) {
-        return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour accéder à cette page.']);
+        // Vérifier si l'utilisateur est connecté
+        if (!$userId || !$userRole) {
+            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour accéder à cette page.']);
+        }
+
+        // Filtrer les offres en fonction du rôle
+        $offresEnVedette = match ($userRole) {
+            'ADMIN' => OffreEnVedette::all(), // Un admin peut voir toutes les offres
+            'AGENCE', 'VENDEUR' => OffreEnVedette::where('user_id', $userId)->get(), // Une agence/vendeur voit ses propres offres
+            default => [],
+        };
+
+        // Vérifier si des offres existent pour ce rôle
+        $hasOffres = !$offresEnVedette->isEmpty();
+
+        // Retourner la vue avec les données filtrées
+        return view('Layout.Backend.Agence_dashboard.Offre_en_vedette.annonce-liste', compact('offresEnVedette', 'hasOffres', 'userRole'));
     }
-
-    // Filtrer les offres en fonction du rôle
-    $offresEnVedette = match ($userRole) {
-        'ADMIN' => OffreEnVedette::all(), // Un admin peut voir toutes les offres
-        'AGENCE', 'VENDEUR' => OffreEnVedette::where('user_id', $userId)->get(), // Une agence/vendeur voit ses propres offres
-        default => [],
-    };
-
-    // Vérifier si des offres existent pour ce rôle
-    $hasOffres = !$offresEnVedette->isEmpty();
-
-    // Retourner la vue avec les données filtrées
-    return view('Layout.Backend.Agence_dashboard.Offre_en_vedette.annonce-liste', compact('offresEnVedette', 'hasOffres', 'userRole'));
-}
 
     public function offreEnVedetteditPage($annonce_id)
     {

@@ -156,6 +156,15 @@
             font-size: 15px;
         }
     }
+
+    .cart-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        transform: translate(-50%, -50%);
+        font-size: 0.75rem;
+        /* Ajuste la taille si nécessaire */
+    }
 </style>
 
 
@@ -193,7 +202,7 @@
 
 
             <div class="btn-group mx-1">
-                <a href="sms:+22890803347" class="btn btn-sm btn-light d-flex align-items-center">
+                <a href="{{ route('chatify') }}" class="btn btn-sm btn-light d-flex align-items-center">
                     <i class="fa fa-comment" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
                     <span class="ml-2" style="color: #318093">Messages</span>
                 </a>
@@ -215,15 +224,19 @@
                     </button>
                 </a>
             </div>
-
             <div class="btn-group mx-1">
                 <a href="{{ route('panier') }}">
-                    <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
+                    <button type="button" class="btn btn-sm btn-light d-flex align-items-center position-relative">
                         <i class="fa fa-shopping-cart" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
                         <span class="ml-2" style="color: #318093">Panier</span>
+                        @if ($cartItemCount > 0)
+                            <span class="badge badge-pill badge-danger ml-1 cart-badge">{{ $cartItemCount }}</span>
+                        @endif
                     </button>
                 </a>
             </div>
+
+
 
             <div class="btn-group mx-1">
                 <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
@@ -340,39 +353,55 @@
                         </button>
                     </li>
                 </a>
-                <li class="nav-item">
-                    <button class="btn btn-light">
-                        <i class="fa fa-phone" style="color: #318093;"></i>
-                    </button>
-                </li>
+                <a href="tel:+22890803347">
+                    <li class="nav-item">
+                        <button class="btn btn-light">
+                            <i class="fa fa-phone" style="color: #318093;"></i>
+                        </button>
+                    </li>
+                </a>
+
+                <a href="{{ route('chatify') }}">
+                    <li class="nav-item">
+                        <button class="btn btn-light">
+                            <i class="fa fa-comment" style="color: #318093;"></i> <span></span>
+                        </button>
+                    </li>
+                </a>
+                <a href="">
+                    <li class="nav-item">
+                        <button class="btn btn-light">
+                            <i class="fa fa-exchange-alt" style="color: #318093;"></i> <span></span>
+                        </button>
+                    </li>
+                </a>
+                <a href="{{ route('favoris') }}">
+                    <li class="nav-item">
+                        <button class="btn btn-light">
+                            <i class="fa fa-heart" style="color: #318093;"></i> <span></span>
+                        </button>
+                    </li>
+                </a>
 
                 <li class="nav-item">
-                    <button class="btn btn-light">
-                        <i class="fa fa-comment" style="color: #318093;"></i> <span></span>
-                    </button>
+                    <a href="{{ route('panier') }}">
+                        <button class="btn btn-light">
+                            <i class="fa fa-shopping-cart" style="color: #318093;"></i>
+                            <span class="ml-2" style="color: #318093"></span>
+                            @if ($cartItemCount > 0)
+                                <span
+                                    class="badge badge-pill badge-danger ml-1 cart-badge">{{ $cartItemCount }}</span>
+                            @endif
+                        </button>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <button class="btn btn-light">
-                        <i class="fa fa-exchange-alt" style="color: #318093;"></i> <span></span>
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-light">
-                        <i class="fa fa-heart" style="color: #318093;"></i> <span></span>
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-light">
-                        <i class="fa fa-bell" style="color: #318093;"></i> <span></span>
-                    </button>
-                </li>
-                <li class="nav-item">
-                   <a href="{{ route('panier') }}">
-                    <button class="btn btn-light">
-                        <i class="fa fa-shopping-cart" style="color: #318093;"></i>
-                    </button>
-                   </a>
-                </li>
+                <a href="">
+                    <li class="nav-item">
+                        <button class="btn btn-light">
+                            <i class="fa fa-bell" style="color: #318093;"></i> <span></span>
+                        </button>
+                    </li>
+                </a>
 
                 <li class="nav-item">
                     <div class="btn-group mx-1">
@@ -395,19 +424,23 @@
                                         Profil
                                     </button>
                                 </a>
-                                <form id="logout-form" action="{{ route('authLogout') }}" method="POST" style="display: none;">
+                                <form id="logout-form" action="{{ route('authLogout') }}" method="POST"
+                                    style="display: none;">
                                     @csrf
                                 </form>
-                                <button class="dropdown-item" type="button" style="color: #318093" onclick="confirmLogout(event)">
+                                <button class="dropdown-item" type="button" style="color: #318093"
+                                    onclick="confirmLogout(event)">
                                     Se déconnecter
                                 </button>
                             @else
                                 <!-- Si l'utilisateur n'est pas connecté -->
                                 <a href="{{ route('loginPage') }}">
-                                    <button class="dropdown-item" type="button" style="color: #318093">Se connecter</button>
+                                    <button class="dropdown-item" type="button" style="color: #318093">Se
+                                        connecter</button>
                                 </a>
                                 <a href="{{ route('signUpPage') }}">
-                                    <button class="dropdown-item" type="button" style="color: #318093">S'inscrire</button>
+                                    <button class="dropdown-item" type="button"
+                                        style="color: #318093">S'inscrire</button>
                                 </a>
                             @endauth
                         </div>

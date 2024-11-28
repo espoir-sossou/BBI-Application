@@ -34,6 +34,6 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_SECRET'),
-        'redirect' => 'https://bbi-application-production-7c97.up.railway.app/login/google/callback',
+        'redirect' => 'http://localhost:8000/login/google/callback',
     ],
 ];

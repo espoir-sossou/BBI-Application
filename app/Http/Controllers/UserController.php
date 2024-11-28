@@ -44,15 +44,7 @@ class UserController extends Controller
 
 
 
-    public function filtrePage()
-    {
-        return view('Layout.Frontend..filtre-page');
-    }
-
-
-
-
-
+    
 
 
     public function userTable()

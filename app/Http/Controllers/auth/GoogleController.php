@@ -30,7 +30,7 @@ class GoogleController extends Controller
               if (!$user) {
                   // Si l'utilisateur n'existe pas, créer un compte avec des valeurs par défaut
                   $user = User::create([
-                      'nom' => $googleUser->getName(), // Nom complet
+                      'name' => $googleUser->getName(), // Nom complet
                       'email' => $googleUser->getEmail(),
                       'password' => bcrypt('default_password'), // Mot de passe par défaut
                       'role' => 'USER', // Rôle par défaut
@@ -56,7 +56,6 @@ class GoogleController extends Controller
               return redirect()->route('loginPage')->with('error', 'Erreur lors de l\'authentification Google : ' . $e->getMessage());
           }
       }
-
 
 
 

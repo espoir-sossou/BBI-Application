@@ -58,16 +58,17 @@
                 <div class="mt-4 d-flex gap-2">
                     <form action="{{ route('ajouterAuPanier', $annonceDetail->annonce_id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-success btn-lg" style="border-radius: 25px;">
-                            <i class="fas fa-check-circle me-2"></i>A Louer
-                        </button>
-                    </form>
-                    <form action="{{ route('ajouterAuPanier', $annonceDetail->annonce_id) }}" method="POST">
-                        @csrf
                         <button type="submit" class="btn btn-info btn-lg" style="border-radius: 25px;">
                             <i class="fas fa-shopping-cart me-2"></i>Acheter
                         </button>
                     </form>
+                    <form action="{{ route('ajouterAuPanier', $annonceDetail->annonce_id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-success btn-lg" style="border-radius: 25px;">
+                            <i class="fas fa-check-circle me-2"></i>A Louer
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>

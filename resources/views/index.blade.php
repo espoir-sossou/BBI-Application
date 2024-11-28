@@ -90,7 +90,7 @@
                                     $imagePath = $annonce->image ? Storage::url($annonce->image) : asset('Frontend/Home/assets/imgs/default.jpg');
                                 @endphp
                                 <a href="{{ route('annonce.details', $annonce->annonce_id) }}">
-                                    <img src="{{ $imagePath }}" alt="Image Annonce" style="max-width: 400px;">
+                                    <img src="{{ $imagePath }}" alt="Image Annonce" style="max-width: 400px; height: 200px">
                                 </a>
 
 

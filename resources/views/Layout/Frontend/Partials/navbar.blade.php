@@ -83,6 +83,7 @@
                             <i class="fa fa-cog" aria-hidden="true"></i>
                             Paramètre
                         </a>
+                        
                     </div>
                 </div>
             </nav>

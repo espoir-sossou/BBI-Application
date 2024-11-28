@@ -111,7 +111,6 @@ class HomeController extends Controller
         return redirect()->route('panier')->with('success', 'Annonce ajoutée au panier.');
     }
 
-
     public function afficherPanier()
     {
         // Vérifiez si l'utilisateur est connecté via Google
@@ -149,8 +148,6 @@ class HomeController extends Controller
             'message' => null,
         ]);
     }
-
-
     // Méthode pour supprimer une annonce du panier
     public function supprimerDuPanier($annonce_id)
     {
@@ -180,6 +177,47 @@ class HomeController extends Controller
         // Rediriger vers la page du panier avec un message de succès
         return redirect()->route('panier')->with('success', 'Annonce supprimée du panier.');
     }
+
+    public function getCartItemCount()
+{
+    // Vérifiez si l'utilisateur est connecté
+    if (!Auth::check()) {
+        return 0; // Pas connecté, aucun élément dans le panier
+    }
+
+    // Récupérer le nombre d'éléments dans le panier de l'utilisateur
+    return Panier::where('user_id', Auth::id())->count();
+}
+public function payer(Request $request, $annonce_id)
+{
+    // Vérifie si l'utilisateur est connecté
+    if (!Auth::check()) {
+        return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour effectuer un paiement.']);
+    }
+
+    $user = Auth::user();
+    $annonce = Annonce::find($annonce_id);
+
+    // Vérifie si l'annonce existe
+    if (!$annonce) {
+        return redirect()->route('panier')->withErrors(['error' => 'Annonce non trouvée.']);
+    }
+
+    // Vérifie le choix de l'utilisateur
+    $paymentOption = $request->input('payment_option');
+
+    if ($paymentOption === 'total') {
+        // Logique pour le paiement en totalité
+        // Vous pouvez rediriger vers une page de paiement ou traiter directement le paiement ici
+        return redirect()->route('paiement.total', ['annonce_id' => $annonce_id]);
+    } elseif ($paymentOption === 'installments') {
+        // Logique pour le paiement par tranches
+        // Vous pouvez définir des informations supplémentaires pour le paiement par tranches
+        return redirect()->route('paiement.installments', ['annonce_id' => $annonce_id]);
+    }
+
+    return redirect()->route('panier')->withErrors(['error' => 'Option de paiement invalide.']);
+}
 
 
     public function ajouterAuxFavoris($annonce_id)
@@ -258,6 +296,165 @@ class HomeController extends Controller
 
         return redirect()->route('favoris')->with('success', 'Annonce supprimée des favoris.');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function filtrePage()
+    {
+        return view('Layout.Frontend.Annonce.filtre-page');
+    }
+
+    public function recherche(Request $request)
+    {
+        // Récupérer les critères de recherche
+        $query = $request->input('query', []);
+        $typeTransaction = $request->input('typeTransaction');
+        $montantMin = $request->input('montantMin');
+        $montantMax = $request->input('montantMax');
+
+        // Filtrer les annonces
+        $annonces = Annonce::query()
+            ->when(isset($query['titre']) && !empty($query['titre']), function ($q) use ($query) {
+                $q->where('titre', 'like', '%' . $query['titre'] . '%');
+            })
+            ->when(isset($query['typePropriete']) && !empty($query['typePropriete']), function ($q) use ($query) {
+                $q->where('typePropriete', $query['typePropriete']);
+            })
+            ->when(isset($query['montant']) && !empty($query['montant']), function ($q) use ($query) {
+                $q->where('montant', $query['montant']);
+            })
+            ->when(isset($query['superficie']) && !empty($query['superficie']), function ($q) use ($query) {
+                $q->where('superficie', $query['superficie']);
+            })
+            ->when(isset($query['nbChambres']) && !empty($query['nbChambres']), function ($q) use ($query) {
+                $q->where('nbChambres', $query['nbChambres']);
+            })
+            ->when(isset($query['nbSalleDeDouche']) && !empty($query['nbSalleDeDouche']), function ($q) use ($query) {
+                $q->where('nbSalleDeDouche', $query['nbSalleDeDouche']);
+            })
+            ->when(isset($query['veranda']) && $query['veranda'] == '1', function ($q) {
+                $q->where('veranda', true);
+            })
+            ->when(isset($query['terrasse']) && $query['terrasse'] == '1', function ($q) {
+                $q->where('terrasse', true);
+            })
+            ->when(isset($query['cuisine']) && $query['cuisine'] == '1', function ($q) {
+                $q->where('cuisine', true);
+            })
+            ->when(isset($query['dependance']) && $query['dependance'] == '1', function ($q) {
+                $q->where('dependance', true);
+            })
+            ->when(isset($query['piscine']) && $query['piscine'] == '1', function ($q) {
+                $q->where('piscine', true);
+            })
+            ->when(isset($query['garage']) && $query['garage'] == '1', function ($q) {
+                $q->where('garage', true);
+            })
+            ->when(isset($query['localite']) && !empty($query['localite']), function ($q) use ($query) {
+                $q->where('localite', 'like', '%' . $query['localite'] . '%');
+            })
+            ->when(isset($query['titreFoncier']) && $query['titreFoncier'] == '1', function ($q) {
+            $q->where('titreFoncier', true);
+        })
+            ->when($typeTransaction, function ($q) use ($typeTransaction) {
+                $q->where('typeTransaction', $typeTransaction);
+            })
+            ->when($montantMin, function ($q) use ($montantMin) {
+                $q->where('montant', '>=', $montantMin);
+            })
+            ->when($montantMax, function ($q) use ($montantMax) {
+                $q->where('montant', '<=', $montantMax);
+            })
+            ->get();
+
+        return redirect()->route('annonces.resultats', $request->all());
+    }
+
+
+
+
+    public function afficherResultats(Request $request)
+    {
+        // Récupérer les critères de recherche
+    $query = $request->input('query', []);
+    $typeTransaction = $request->input('typeTransaction');
+    $montantMin = $request->input('montantMin');
+    $montantMax = $request->input('montantMax');
+
+    // Filtrer les annonces
+    $annonces = Annonce::query()
+        ->when(isset($query['titre']) && !empty($query['titre']), function ($q) use ($query) {
+            $q->where('titre', 'like', '%' . $query['titre'] . '%');
+        })
+        ->when(isset($query['typePropriete']) && !empty($query['typePropriete']), function ($q) use ($query) {
+            $q->where('typePropriete', $query['typePropriete']);
+        })
+        ->when(isset($query['montant']) && !empty($query['montant']), function ($q) use ($query) {
+            $q->where('montant', $query['montant']);
+        })
+        ->when(isset($query['superficie']) && !empty($query['superficie']), function ($q) use ($query) {
+            $q->where('superficie', $query['superficie']);
+        })
+        ->when(isset($query['nbChambres']) && !empty($query['nbChambres']), function ($q) use ($query) {
+            $q->where('nbChambres', $query['nbChambres']);
+        })
+        ->when(isset($query['nbSalleDeDouche']) && !empty($query['nbSalleDeDouche']), function ($q) use ($query) {
+            $q->where('nbSalleDeDouche', $query['nbSalleDeDouche']);
+        })
+        ->when(isset($query['veranda']) && $query['veranda'] == '1', function ($q) {
+            $q->where('veranda', true);
+        })
+        ->when(isset($query['terrasse']) && $query['terrasse'] == '1', function ($q) {
+            $q->where('terrasse', true);
+        })
+        ->when(isset($query['cuisine']) && $query['cuisine'] == '1', function ($q) {
+            $q->where('cuisine', true);
+        })
+        ->when(isset($query['dependance']) && $query['dependance'] == '1', function ($q) {
+            $q->where('dependance', true);
+        })
+        ->when(isset($query['piscine']) && $query['piscine'] == '1', function ($q) {
+            $q->where('piscine', true);
+        })
+        ->when(isset($query['garage']) && $query['garage'] == '1', function ($q) {
+            $q->where('garage', true);
+        })
+        ->when(isset($query['localite']) && !empty($query['localite']), function ($q) use ($query) {
+            $q->where('localite', 'like', '%' . $query['localite'] . '%');
+        })
+         ->when(isset($query['titreFoncier']) && $query['titreFoncier'] == '1', function ($q) {
+            $q->where('titreFoncier', true);
+        })
+        ->when($typeTransaction, function ($q) use ($typeTransaction) {
+            $q->where('typeTransaction', $typeTransaction);
+        })
+        ->when($montantMin, function ($q) use ($montantMin) {
+            $q->where('montant', '>=', $montantMin);
+        })
+        ->when($montantMax, function ($q) use ($montantMax) {
+            $q->where('montant', '<=', $montantMax);
+        })
+        ->get();
+
+        return view('Layout.Frontend.Annonce.resultats', compact('annonces'));
+
+     }
 
 
 

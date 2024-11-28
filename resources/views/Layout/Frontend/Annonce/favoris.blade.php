@@ -1,7 +1,7 @@
 @extends('Layout.home')
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <h2>Mes Favoris</h2>
 
         @if (session('message'))
@@ -29,16 +29,23 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ $annonce->titre }}</h5>
                                 <p class="card-text">{{ number_format($annonce->montant, 0, ',', ' ') }} XOF</p>
-                                <a href="{{ route('annonce.details', $annonce->annonce_id) }}" class="btn btn-info">Voir les
-                                    détails</a>
+                                <div class="d-flex align-items-center mt-2">
+                                    <span class="badge" > <a href="{{ route('annonce.details', $annonce->annonce_id) }}" class="text-info" style="font-size: 16px">Voir les
+                                        détails</a>
+                                    </span>
 
-                                <!-- Bouton pour supprimer l'annonce des favoris -->
-                                <form action="{{ route('favoris.supprimer', $annonce->annonce_id) }}" method="POST"
-                                    style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm mt-2">Supprimer des favoris</button>
-                                </form>
+                                    <!-- Lien pour retirer l'annonce du panier -->
+                                    <form action="{{ route('favoris.supprimer', $annonce->annonce_id) }}" method="POST"
+                                        style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <span class="text-danger ms-3" style="cursor: pointer;"
+                                            onclick="this.closest('form').submit()">
+                                            Retirer
+                                            <i class="fa fa-trash ms-1"></i>
+                                        </span>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

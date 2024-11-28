@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('titre');
             $table->text('description')->nullable(); // Champ optionnel
             $table->string('typePropriete');
-            $table->float('montant');
-            $table->float('superficie')->nullable(); // Champ optionnel
+            $table->double('montant');
+            $table->double('superficie')->nullable(); // Champ optionnel
             $table->integer('nbChambres')->nullable(); // Champ optionnel
             $table->integer('nbSalleDeDouche')->nullable(); // Champ optionnel
             $table->integer('veranda')->default(0); // Champ avec valeur par défaut

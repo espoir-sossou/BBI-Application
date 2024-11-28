@@ -8,6 +8,7 @@ use App\Http\Controllers\AgenceController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VendeurController;
 use App\Http\Controllers\AcheteurController;
+use App\Http\Controllers\PayementController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\auth\GoogleController;
 use App\Http\Controllers\NotificationController;
@@ -33,6 +34,11 @@ Route::get('/panier', [HomeController::class, 'afficherPanier'])->name('panier')
 // Route pour supprimer une annonce du panier
 Route::delete('/panier/supprimer/{annonce_id}', [HomeController::class, 'supprimerDuPanier'])->name('panier.supprimer');
 
+Route::get('/cart/item-count', [HomeController::class, 'getCartItemCount'])->name('cart.itemCount');
+
+Route::post('/panier/payer/{annonce_id}', [HomeController::class, 'payer'])->name('panier.payer');
+
+
 // Route pour ajouter une annonce aux favoris
 Route::post('/ajouter-aux-favoris/{annonce_id}', [HomeController::class, 'ajouterAuxFavoris'])->name('ajouterAuxFavoris');
 
@@ -42,11 +48,21 @@ Route::get('/favoris', [HomeController::class, 'afficherFavoris'])->name('favori
 // Route pour supprimer une annonce des favoris
 Route::delete('/favoris/supprimer/{annonce_id}', [HomeController::class, 'supprimerDesFavoris'])->name('favoris.supprimer');
 
-
 Route::get('/offres', [HomeController::class, 'offre'])->name('offre');
 
+Route::get('/filtre-page', [HomeController::class, 'filtrePage'])->name('filtre.page');
+
+Route::get('/recherche', [HomeController::class, 'recherche'])->name('annonces.recherche');
+
+Route::get('/resultats-recherche', [HomeController::class, 'afficherResultats'])->name('annonces.resultats');
 
 
+
+// Route pour le paiement total
+Route::get('/paiement/total/{annonce_id}', [PayementController::class, 'paiementTotal'])->name('paiement.total');
+
+// Route pour le paiement par tranches
+Route::get('/paiement/installments/{annonce_id}', [PayementController::class, 'paiementInstallments'])->name('paiement.installments');
 
 
 
@@ -93,6 +109,9 @@ Route::post('/sign-up', [AuthController::class, 'handleSignup'])->name('handleSi
 
 Route::get('login/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('login/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
+
+
 
 // Route de déconnexion, accessible uniquement aux utilisateurs authentifiés
 // Route::post('/user-logout', [AuthController::class, 'handleLogout'])->name('user.logout');
@@ -176,11 +195,11 @@ Route::middleware(['no-back-history',])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'userDashboard'])->name('user.dashboards');
     Route::get('/user/dashboard', [UserController::class, 'redirectToDashboard'])->name('user.dashboard');
     Route::get('/user/chart', [UserController::class, 'userChart'])->name('user.chart');
-    Route::get('/filtre-page', [UserController::class, 'filtrePage'])->name('filtre.page');
     Route::get('/user/table', [UserController::class, 'userTable'])->name('user.table');
 
     Route::get('/messages/{receiver_id}', [MessageController::class, 'chat'])->name('messages.chat');
     Route::post('/messages/{receiver_id}', [MessageController::class, 'sendMessage'])->name('messages.send');
+
 
 
 

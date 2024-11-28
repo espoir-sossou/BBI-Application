@@ -23,7 +23,7 @@ class AuthController extends Controller
     {
         // Validation des données
         $validator = Validator::make($request->all(), [
-            'nom' => 'nullable|string|max:255',
+            'name' => 'nullable|string|max:255',
             'prenom' => 'nullable|string|max:255',
             'sexe' => 'nullable|string|max:10',
             'username' => 'nullable|string|max:255',
@@ -44,7 +44,7 @@ class AuthController extends Controller
 
             // Vérifier que les champs nom et prenom existent avant de les passer à la création
             $userData = [
-                'nom' => $request->nom ?: null,
+                'name' => $request->nom ?: null,
                 'prenom' => $request->prenom ?: null,
                 'sexe' => $request->sexe,
                 'username' => $request->username,
