@@ -2,30 +2,43 @@
 <html lang="en">
 
 <head>
-   <!-- Meta tags pour une meilleure prévisualisation sur les réseaux sociaux -->
-   <meta property="og:title" content="{{ $annonceDetail->titre }}">
-   <meta property="og:description" content="{{ $annonceDetail->description }}">
-   <meta property="og:url" content="{{ url()->current() }}">
-   <!-- Utilise l'URL absolue pour l'image -->
-   <meta property="og:image" content="http://192.168.1.79:8001/storage/annonces/mKJt45IUqlrLD4XjkhoQ2FKLTjVcpAgTP0GFhRA1.jpg">
-   <meta property="og:type" content="article">
-   <meta property="og:site_name" content="Nom de votre site">
+    <!-- Meta tags pour une meilleure prévisualisation sur les réseaux sociaux -->
 
-   <!-- Twitter Meta tags -->
-   <meta name="twitter:card" content="summary_large_image">
-   <meta name="twitter:title" content="{{ $annonceDetail->titre }}">
-   <meta name="twitter:description" content="{{ $annonceDetail->description }}">
-   <meta name="twitter:image" content="http://192.168.1.79:8001/storage/annonces/mKJt45IUqlrLD4XjkhoQ2FKLTjVcpAgTP0GFhRA1.jpg">
+    <!-- Titre pour la prévisualisation sur les réseaux sociaux -->
+    <meta property="og:title" content="{{ $annonceDetail->titre }}">
 
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>{{ $annonceDetail->titre }}</title>
+    <!-- Description pour la prévisualisation sur les réseaux sociaux -->
+    <meta property="og:description" content="{{ $annonceDetail->description }}">
+
+    <!-- URL de la page pour les réseaux sociaux -->
+    <meta property="og:url" content="{{ url()->current() }}">
+
+    <!-- Image pour la prévisualisation sur les réseaux sociaux -->
+    <meta property="og:image" content="{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}">
+
+    <!-- Type de contenu partagé (article, vidéo, etc.) -->
+    <meta property="og:type" content="article">
+
+    <!-- Le nom de l'auteur ou de la page (optionnel) -->
+    <meta property="og:site_name" content="Nom de votre site">
+
+    <!-- Image pour Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $annonceDetail->titre }}">
+    <meta name="twitter:description" content="{{ $annonceDetail->description }}">
+    <meta name="twitter:image" content="{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}">
+
+    <!-- Définir la langue de la page (optionnel) -->
+    <meta http-equiv="Content-Language" content="fr">
+
+    <!-- Autres meta-tags utiles -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $annonceDetail->titre }}</title>
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie d'images - Annonce</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 </head>
@@ -210,9 +223,6 @@
                 modal.show();
             });
         </script>
-
-
-
 
         <style>
             /* Modal style */
