@@ -25,7 +25,8 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        @include('Layout.Backend.Agence_dashboard.Partials.sidebar')
+        @include('Layout.Backend.Agence_dashboard.Partials.sidebar', ['agentsUsers' => $agentsUsers])
+
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -65,7 +66,7 @@
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">
                         Cancel
                     </button>
-                    <a class="btn btn-primary" href="{{ route('authLogout') }}">Logout</a>
+                    <a class="btn btn-primary" href="{{ route('auth.dashboard.Logout') }}">Logout</a>
                 </div>
             </div>
         </div>

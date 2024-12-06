@@ -144,32 +144,46 @@
                 </select>
             </div>
 
-            <!-- Image -->
             <div class="form-group">
-                <label for="image">Image</label>
-                <div>
-                    @php
-                        $imagePath = $annonce->image
-                            ? Storage::url($annonce->image)
-                            : asset('Frontend/Home/assets/imgs/default.jpg');
-                    @endphp
-                    <img id="imagePreview" src="{{ $imagePath }}" alt="Preview" class="mt-2"
-                        style="max-width: 100px;">
+                <label for="images">Images existantes</label>
+                <div id="existingImagesPreview" class="mt-2">
+                    @foreach ($annonce->images as $image)
+                        <div class="existing-image">
+                            <img src="{{ Storage::url($image->path) }}" alt="Image" style="max-width: 100px; margin: 5px;">
+                            <label>
+                                <input type="checkbox" name="remove_images[]" value="{{ $image->id }}"> Supprimer
+                            </label>
+                        </div>
+                    @endforeach
                 </div>
-                <input type="file" class="form-control-file" id="image" name="image"
-                    accept="image/jpeg, image/png, image/gif" onchange="previewImage(event)">
-                @error('image')
+            </div>
+
+            <div class="form-group">
+                <label for="newImages">Ajouter de nouvelles images</label>
+                <input id="newImages" type="file" class="form-control-file" name="new_images[]" accept="image/*" multiple onchange="previewNewImages(event)">
+                <div id="newImagesPreview" class="mt-2"></div>
+                @error('new_images.*')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
 
             <script>
-                function previewImage(event) {
-                    const preview = document.getElementById('imagePreview');
-                    preview.src = URL.createObjectURL(event.target.files[0]);
-                    preview.style.display = 'block';
+                function previewNewImages(event) {
+                    const previewContainer = document.getElementById('newImagesPreview');
+                    const files = event.target.files;
+
+                    previewContainer.innerHTML = ''; // Réinitialiser l'aperçu
+
+                    Array.from(files).forEach(file => {
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.style.maxWidth = '100px';
+                        img.style.margin = '5px';
+                        previewContainer.appendChild(img);
+                    });
                 }
             </script>
+
 
             <!-- Boutons -->
             <button type="submit" class="btn btn-primary mt-3">Mettre à jour l'annonce</button>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Annonce;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -17,6 +18,25 @@ class AdminController extends Controller
             ->get();
 
         return view('Layout.Backend.Admin_dashboard.index', compact('notifications'));
+    }
+
+    public function adminProfil()
+    {
+        $adminId = session('user_id'); // Récupération de l'ID de l'agent connecté depuis la session
+
+        // Vérifie si l'ID de l'agent est présent dans la session
+        if (!$adminId) {
+            return redirect()->route('login')->with('fail', 'Veuillez vous connecter pour accéder à votre profil.');
+        }
+
+        // Récupère les informations de l'agent en utilisant l'ID
+        $agent = User::find($adminId); // Ou un modèle spécifique pour les agents, selon ta structure
+
+        if (!$agent) {
+            return redirect()->route('login')->with('fail', 'Agent introuvable.');
+        }
+
+        return view('Layout.Connexion.Clients.admin-profile', compact('agent'));
     }
 
     public function adminAnnonceListe()

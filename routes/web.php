@@ -30,7 +30,20 @@ Route::get('/annonce/{annonce_id}', [HomeController::class, 'showAnnonce'])->nam
 // Route pour ajouter au panier
 Route::post('/ajouter-au-panier/{annonce_id}', [HomeController::class, 'ajouterAuPanier'])->name('ajouterAuPanier');
 // Route pour afficher le panier
+Route::get('/avendre', [HomeController::class, 'avendrePage'])->name('avendre');
+Route::get('/alouer', [HomeController::class, 'alouerPage'])->name('alouer');
+Route::get('/appartement', [HomeController::class, 'appartementPage'])->name('appartement');
+Route::get('/maison', [HomeController::class, 'maisonPage'])->name('maison');
+Route::get('/terrain', [HomeController::class, 'terrainPage'])->name('terrain');
+Route::get('/villa', [HomeController::class, 'villaPage'])->name('villa');
+
+
+
 Route::get('/panier', [HomeController::class, 'afficherPanier'])->name('panier');
+Route::get('/apropos', [HomeController::class, 'aproposPage'])->name('apropos');
+Route::get('/service', [HomeController::class, 'servicePage'])->name('service');
+Route::get('/contact', [HomeController::class, 'contactPage'])->name('contact');
+
 // Route pour supprimer une annonce du panier
 Route::delete('/panier/supprimer/{annonce_id}', [HomeController::class, 'supprimerDuPanier'])->name('panier.supprimer');
 
@@ -55,6 +68,11 @@ Route::get('/filtre-page', [HomeController::class, 'filtrePage'])->name('filtre.
 Route::get('/recherche', [HomeController::class, 'recherche'])->name('annonces.recherche');
 
 Route::get('/resultats-recherche', [HomeController::class, 'afficherResultats'])->name('annonces.resultats');
+
+
+Route::get('/annonces/map', [HomeController::class, 'showMap'])->name('annonces.map');
+
+Route::get('/annonce/{annonce_id}/carte/google-map', [HomeController::class, 'showAnnonceCarte'])->name('annonce.carte');
 
 
 
@@ -104,11 +122,16 @@ Route::get('/auth-dashboard-logout', [AuthController::class, 'authDashboardLogou
 // Routes publiques
 Route::post('/login', [AuthController::class, 'handleLogin'])->name('handleLogin');
 Route::get('/auth/google/login', [AuthController::class, 'googleLogin'])->name('googleLogin');
+
 Route::get('/signup-page', [AuthController::class, 'signUpPage'])->name('signUpPage');
 Route::post('/sign-up', [AuthController::class, 'handleSignup'])->name('handleSignup');
 
+
 Route::get('login/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('login/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('/login/google/local/callback', [GoogleController::class, 'handleGoogleLocalCallback'])->name('google.local.callback');
+
+
 
 
 
@@ -118,11 +141,11 @@ Route::get('login/google/callback', [GoogleController::class, 'handleGoogleCallb
 
 // Routes protégées par no-back-historyentification et non accessibles après déconnexion
 Route::middleware(['no-back-history',])->group(function () {
-    Route::get('/user-profil', [AuthController::class, 'userProfil'])->name('user.profil');
-
 
     // Routes de l'admin
     Route::get('/admin/dashboard', [AdminController::class, 'adminDashboard'])->name('admin.dashboard');
+    Route::get('/admin-profil', [AdminController::class, 'adminProfil'])->name('admin.profil');
+
     Route::get('/admin/table', [AdminController::class, 'adminTable'])->name('admin.table');
     Route::get('/admin/chart', [AdminController::class, 'adminChart'])->name('admin.chart');
 
@@ -136,6 +159,7 @@ Route::middleware(['no-back-history',])->group(function () {
     Route::delete('/admin/offre-en-vedette/{id}', [AdminController::class, 'adminDestroyOffreEnVedette'])->name('admin.offreEnVedette.destroy');
 
     // Routes de l'agence
+    Route::get('/agence-profil', [AgenceController::class, 'agenceProfil'])->name('agence.profil');
     Route::get('/agence/dashboard', [AgenceController::class, 'agenceDashboard'])->name('agence.dashboard');
     Route::get('/agence/table', [AgenceController::class, 'agenceTable'])->name('agence.table');
     Route::get('/agence/chart', [AgenceController::class, 'agenceChart'])->name('agence.chart');
@@ -193,12 +217,29 @@ Route::middleware(['no-back-history',])->group(function () {
 
     // Routes de l'utilisateur standard
     Route::get('/user/dashboard', [UserController::class, 'userDashboard'])->name('user.dashboards');
+    Route::get('/user-profil', [UserController::class, 'userProfil'])->name('user.profil');
+
     Route::get('/user/dashboard', [UserController::class, 'redirectToDashboard'])->name('user.dashboard');
     Route::get('/user/chart', [UserController::class, 'userChart'])->name('user.chart');
     Route::get('/user/table', [UserController::class, 'userTable'])->name('user.table');
 
-    Route::get('/messages/{receiver_id}', [MessageController::class, 'chat'])->name('messages.chat');
-    Route::post('/messages/{receiver_id}', [MessageController::class, 'sendMessage'])->name('messages.send');
+    Route::get('/messages/{annonce_id}', [MessageController::class, 'chat'])->name('messages.chat');
+    Route::post('/messages/{annonce_id}', [MessageController::class, 'sendMessage'])->name('messages.send');
+    Route::get('/agence/messages/{receiver_id}', [MessageController::class, 'agenceChat'])->name('agence.messages.chat');
+    Route::get('/list/messages/users', [MessageController::class, 'listMessageUsers'])->name('list.messages.users');
+
+    // Route modifiée
+    Route::post('/agence/messages/{receiver_id}', [MessageController::class, 'agenceSendMessage'])->name('agence.messages.send');
+
+    Route::get('/conversations', [MessageController::class, 'index'])->name('chat.index');
+    Route::get('/conversations/{id}', [MessageController::class, 'show'])->name('chat.show');
+    Route::post('/messages/{id}', [MessageController::class, 'store'])->name('messages.store');
+
+    Route::get('/agence/conversations', [MessageController::class, 'agenceIndex'])->name('agence.chat.index');
+
+
+
+
 
 
 

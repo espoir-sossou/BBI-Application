@@ -34,28 +34,30 @@
           <div id="collapseAnnonces" class="collapse" aria-labelledby="headingAnnonces" data-parent="#accordionSidebar">
               <div class="bg-white py-2 collapse-inner rounded">
                   <h6 class="collapse-header">Gestion des Annonces:</h6>
-                  <a class="collapse-item" href="{{ route('annonce.add.page') }}">Créer Annonce</a> <!-- Lien pour créer une annonce -->
+                  <a class="collapse-item" href="{{ route('annonce.add.page') }}">Créer Annonce</a>
+                  <!-- Lien pour créer une annonce -->
                   <a class="collapse-item" href="{{ route('annonce.liste') }}">Liste Annonces</a>
                   <!-- Lien pour voir la liste des annonces -->
               </div>
           </div>
       </li>
-      
+
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAnnonces"
-            aria-expanded="true" aria-controls="collapseAnnonces">
-            <i class="fas fa-fw fa-bullhorn"></i> <!-- Icone pour Annonces -->
-            <span>Offre en vedette</span>
-        </a>
-        <div id="collapseAnnonces" class="collapse" aria-labelledby="headingAnnonces" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Gestion des Annonces:</h6>
-                <a class="collapse-item" href="{{ route('offreEnVedette.add.page') }}">Créer une offre</a> <!-- Lien pour créer une annonce -->
-                <a class="collapse-item" href="{{ route('offreEnVedette.liste') }}">Liste des offres</a>
-                <!-- Lien pour voir la liste des annonces -->
-            </div>
-        </div>
-    </li>
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAnnonces"
+              aria-expanded="true" aria-controls="collapseAnnonces">
+              <i class="fas fa-fw fa-bullhorn"></i> <!-- Icone pour Annonces -->
+              <span>Offre en vedette</span>
+          </a>
+          <div id="collapseAnnonces" class="collapse" aria-labelledby="headingAnnonces" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                  <h6 class="collapse-header">Gestion des Annonces:</h6>
+                  <a class="collapse-item" href="{{ route('offreEnVedette.add.page') }}">Créer une offre</a>
+                  <!-- Lien pour créer une annonce -->
+                  <a class="collapse-item" href="{{ route('offreEnVedette.liste') }}">Liste des offres</a>
+                  <!-- Lien pour voir la liste des annonces -->
+              </div>
+          </div>
+      </li>
 
       <!-- Nav Item - Utilities Collapse Menu
       <li class="nav-item">
@@ -103,13 +105,17 @@
           </div>
       </li>
  -->
-      <!-- Nav Item - Charts
+      <!-- Nav Item - Charts -->
+      <!-- Nav Item - Charts -->
       <li class="nav-item">
-          <a class="nav-link" href="{{ route('user.chart') }}">
-              <i class="fas fa-fw fa-chart-area"></i>
-              <span>Charts</span></a>
-      </li>
--->
+        <a class="nav-link" href="{{ route('list.messages.users') }}">
+            <i class="fas fa-fw fa-envelope"></i>
+            <span>Messages reçus</span>
+        </a>
+    </li>
+
+
+
       <!-- Nav Item - Tables
       <li class="nav-item">
           <a class="nav-link" href="{{ route('user.table') }}">

@@ -175,9 +175,9 @@
         <!-- Liens et menu à gauche (desktop seulement) -->
         <div class="col-lg-6 d-none d-lg-block">
             <div class="d-inline-flex align-items-center h-100">
-                <a class="text-body mr-3" href="#">Apropos</a>
-                <a class="text-body mr-3" href="#">Contact</a>
-                <a class="text-body mr-3" href="#">Services</a>
+                <a class="text-body mr-3" href="{{ route('apropos') }}">Apropos</a>
+                <a class="text-body mr-3" href="{{ route('service') }}">Services</a>
+                <a class="text-body mr-3" href="{{ route('contact') }}">Contact</a>
                 <a class="text-body mr-3" href="#"><i class="fa fa-question-circle" aria-hidden="true"
                         title="aide"></i></a>
             </div>
@@ -185,24 +185,18 @@
 
         <!-- Section des boutons horizontaux (pour les grands écrans) -->
         <div class="d-none d-lg-flex justify-content-end">
-            <!-- Liste des boutons -->
-            <div class="btn-group mx-1">
-                <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
-                    <i class="fa fa-briefcase" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
-                    <span class="ml-2" style="color: #318093">BBI</span>
-                </button>
-            </div>
 
             <div class="btn-group mx-1">
-                <a href="tel:+22890803347" class="btn btn-sm btn-light d-flex align-items-center">
-                    <i class="fa fa-phone" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
-                    <span class="ml-2" style="color: #318093">Appeler</span>
+                <a href="https://wa.me/22901910901" class="btn btn-sm btn-light d-flex align-items-center">
+                    <i class="fab fa-whatsapp" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
+                    <span class="ml-2" style="color: #318093">WhatsApp</span>
                 </a>
+
             </div>
 
 
             <div class="btn-group mx-1">
-                <a href="{{ route('chatify') }}" class="btn btn-sm btn-light d-flex align-items-center">
+                <a href="{{ route('chat.index') }}" class="btn btn-sm btn-light d-flex align-items-center">
                     <i class="fa fa-comment" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
                     <span class="ml-2" style="color: #318093">Messages</span>
                 </a>
@@ -215,15 +209,20 @@
                     <span class="ml-2" style="color: #318093">Comparer</span>
                 </button>
             </div>
-
             <div class="btn-group mx-1">
                 <a href="{{ route('favoris') }}">
-                    <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
+                    <button type="button" class="btn btn-sm btn-light d-flex align-items-center position-relative">
                         <i class="fa fa-heart" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
-                        <span class="ml-2" style="color: #318093">Favori</span>
+                        <span class="ml-2" style="color: #318093">Favoris</span>
+                        @if ($favorisItemCount > 0)
+                            <span class="badge badge-pill badge-danger ml-1 cart-badge">{{ $favorisItemCount }}</span>
+                        @endif
                     </button>
                 </a>
             </div>
+
+
+
             <div class="btn-group mx-1">
                 <a href="{{ route('panier') }}">
                     <button type="button" class="btn btn-sm btn-light d-flex align-items-center position-relative">
@@ -248,7 +247,7 @@
             <div class="btn-group mx-1">
                 <button type="button" class="btn btn-sm btn-light dropdown-toggle d-flex align-items-center"
                     data-toggle="dropdown">
-                    <i class="fa fa-user" aria-hidden="true" style="color: #318093"></i>
+                    <i class="fa fa-user" aria-hidden="true" style="color: #318093; font-size:20px"></i>
                     <span class="ml-2" style="color: #318093">
                         @auth
                             {{ Auth::user()->nom }} {{ Auth::user()->prenom }}
@@ -306,16 +305,22 @@
         </a>
     </div>
     <div class="col-lg-4 col-6 text-left mb-2">
-        <form action="">
+        <form action="{{ route('annonces.recherche') }}" method="GET">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Rechercher un produit">
+                <input type="text" class="form-control" id="typePropriete" name="query[typePropriete]"
+                    placeholder="Rechercher un produit"
+                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
                 <div class="input-group-append">
-                    <span class="input-group-text bg-transparent" style="color:#318093">
-                        <i class="fa fa-search"></i>
-                    </span>
+                    <button type="submit" class="btn btn-light">
+                        <span class="input-group-text bg-transparent" style="color:#318093">
+                            <i class="fa fa-search"></i>
+                        </span>
+                    </button>
                 </div>
             </div>
         </form>
+
+
     </div>
     <div class="col-lg-4 col-6 text-right mb-4">
         <a href="{{ route('agent.loginPage') }}" class="btn btn-outline-primary"
@@ -338,7 +343,21 @@
 
         <!-- Barre de recherche alignée à droite -->
         <div class="col-8">
-            <input type="text" class="form-control" placeholder="Rechercher..." aria-label="Rechercher" />
+            <form action="{{ route('annonces.recherche') }}" method="GET">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="typePropriete" name="query[typePropriete]"
+                        placeholder="Rechercher un produit"
+                        style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-light">
+                            <span class="input-group-text bg-transparent" style="color:#318093">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
         </div>
     </div>
 
@@ -353,15 +372,12 @@
                         </button>
                     </li>
                 </a>
-                <a href="tel:+22890803347">
-                    <li class="nav-item">
-                        <button class="btn btn-light">
-                            <i class="fa fa-phone" style="color: #318093;"></i>
-                        </button>
-                    </li>
+                <a href="https://wa.me/22901910901" class="btn btn-sm btn-light d-flex align-items-center">
+                    <i class="fab fa-whatsapp" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
+                    <span class="ml-2" style="color: #318093"></span>
                 </a>
 
-                <a href="{{ route('chatify') }}">
+                <a href="{{ route('chat.index') }}">
                     <li class="nav-item">
                         <button class="btn btn-light">
                             <i class="fa fa-comment" style="color: #318093;"></i> <span></span>
@@ -375,26 +391,38 @@
                         </button>
                     </li>
                 </a>
-                <a href="{{ route('favoris') }}">
-                    <li class="nav-item">
-                        <button class="btn btn-light">
-                            <i class="fa fa-heart" style="color: #318093;"></i> <span></span>
-                        </button>
-                    </li>
-                </a>
-
                 <li class="nav-item">
-                    <a href="{{ route('panier') }}">
-                        <button class="btn btn-light">
-                            <i class="fa fa-shopping-cart" style="color: #318093;"></i>
+                    <a href="{{ route('favoris') }}">
+                        <button type="button"
+                            class="btn btn-sm btn-light d-flex align-items-center position-relative">
+                            <i class="fa fa-heart" aria-hidden="true" style="color: #318093"></i>
                             <span class="ml-2" style="color: #318093"></span>
-                            @if ($cartItemCount > 0)
-                                <span
-                                    class="badge badge-pill badge-danger ml-1 cart-badge">{{ $cartItemCount }}</span>
+                            @if ($favorisItemCount > 0)
+                                <span class="badge badge-pill badge-danger ml-1 cart-badge"
+                                    style="padding: 1px 3px; font-size: 12px; height: auto; min-width: auto;">{{ $favorisItemCount }}</span>
                             @endif
                         </button>
                     </a>
                 </li>
+
+
+                <div class="btn-group mx-1">
+                    <a href="{{ route('panier') }}">
+                        <button type="button"
+                            class="btn btn-sm btn-light d-flex align-items-center position-relative">
+                            <i class="fa fa-shopping-cart" aria-hidden="true" style="color: #318093"></i>
+                            <span class="ml-2" style="color: #318093"></span>
+                            @if ($cartItemCount > 0)
+                                <span class="badge badge-pill badge-danger ml-1 cart-badge"
+                                    style="padding: 1px 3px; font-size: 12px; height: auto; min-width: auto;">
+                                    {{ $cartItemCount }}
+                                </span>
+                            @endif
+                        </button>
+                    </a>
+
+                </div>
+
                 <a href="">
                     <li class="nav-item">
                         <button class="btn btn-light">
@@ -467,11 +495,12 @@
 <!-- Bottom Navbar for small screens -->
 <div class="bottom-navbar d-block d-lg-none">
     <div class="navbar">
-        <a href="{{ route('offre') }}" class="bottom-nav-item">
+        <a href="/" class="nav-item nav-link active bottom-nav-item" style="color: #318093">
             <i class="fa fa-bolt"></i>
             <span>Offre</span>
         </a>
-        <a href="#" class="bottom-nav-item">
+
+        <a href="{{ route('annonces.map') }}" class="bottom-nav-item">
             <i class="fa fa-map"></i>
             <span>Carte</span>
         </a>

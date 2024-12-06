@@ -27,17 +27,18 @@ class Annonce extends Model
         'piscine',
         'garage',
         'localite',
-        'titreFoncier',
-        'localisation',
+        'latitude',
+        'longitude',
         'details',
         'typeTransaction',
         'visite360',
         'dateCreation',
         'validee',
         'video',
-        'image',
-        'assigned_admin_id',
+        'user_id',
+        'admin_id',
     ];
+
 
     /**
      * Relation avec le modèle User (table Prisma `User`).
@@ -47,8 +48,12 @@ class Annonce extends Model
         return $this->belongsTo(User::class, 'assigned_admin_id', 'user_id');
     }
     public function paniers()
-{
-    return $this->hasMany(Panier::class, 'annonce_id', 'annonce_id');
-}
+    {
+        return $this->hasMany(Panier::class, 'annonce_id', 'annonce_id');
+    }
+    public function images()
+    {
+        return $this->hasMany(AnnonceImage::class, 'annonce_id');
+    }
 
 }

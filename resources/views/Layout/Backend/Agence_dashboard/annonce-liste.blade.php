@@ -57,11 +57,13 @@
                                         <th>Garage</th>
                                         <th>Titre Foncier</th>
                                         <th>Localité</th>
-                                        <th>Localisation</th>
+                                        <th>Latitude</th>
+                                        <th>Longitude</th>
+                                        <th>Carte</th>
+                                        <th>Lien Google Maps</th>
                                         <th>Détails</th>
                                         <th>Type de Transaction</th>
                                         <th>Visite 360°</th>
-                                        <th>Vidéo</th>
                                         <th>Image</th>
                                         <th>Valider</th>
                                         <th>Actions</th>
@@ -86,37 +88,65 @@
                                             <td>{{ $annonce->garage ? 'Oui' : 'Non' }}</td>
                                             <td>{{ $annonce->titreFoncier ? 'Oui' : 'Non' }}</td>
                                             <td>{{ $annonce->localite }}</td>
-                                            <td>{{ $annonce->localisation }}</td>
+                                            <td>{{ $annonce->latitude }}</td>
+                                            <td>{{ $annonce->longitude }}</td>
+                                            <td>
+                                                @if ($annonce->latitude && $annonce->longitude)
+                                                    <iframe width="200" height="150" frameborder="0" style="border:0;"
+                                                        src="https://www.google.com/maps/embed/v1/view?key=AIzaSyBrntgALGzUGdJNxYhC5Nb_rOmSxhuRsZM&center={{ $annonce->latitude }},{{ $annonce->longitude }}&zoom=15"
+                                                        allowfullscreen>
+                                                    </iframe>
+                                                @else
+                                                    Non disponible
+                                                @endif
+                                            </td>
+
+                                            <td>
+                                                @if ($annonce->latitude && $annonce->longitude)
+                                                    <a href="https://www.google.com/maps?q={{ $annonce->latitude }},{{ $annonce->longitude }}"
+                                                        target="_blank">
+                                                        Voir sur Google Maps
+                                                    </a>
+                                                @else
+                                                    Non disponible
+                                                @endif
+                                            </td>
                                             <td>{{ $annonce->details }}</td>
                                             <td>{{ $annonce->typeTransaction }}</td>
                                             <td>{{ $annonce->visite360 }}</td>
-                                            <td>{{ $annonce->video }}</td>
                                             <td>
-                                                @if ($annonce->image)
-                                                    @php
-                                                        // Vérifier si l'image existe dans le disque public
-                                                        $imageUrl = Storage::disk('public')->exists($annonce->image)
-                                                            ? Storage::disk('public')->url($annonce->image)
-                                                            : asset('default-image.jpg'); // Image par défaut
-                                                    @endphp
-                                                    <img src="{{ $imageUrl }}" alt="Image Annonce" width="50">
+                                                @if ($annonce->images->isNotEmpty())
+                                                    <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                                        @foreach ($annonce->images as $image)
+                                                            @php
+                                                                // Vérifier si le chemin de l'image existe dans le disque public
+                                                                $imageUrl = Storage::disk('public')->exists($image->path)
+                                                                    ? Storage::disk('public')->url($image->path)
+                                                                    : asset('default-image.jpg'); // Image par défaut
+                                                            @endphp
+                                                            <div style="width: 50px; height: 50px; overflow: hidden; border-radius: 5px;">
+                                                                <img src="{{ $imageUrl }}" alt="Image Annonce" style="width: 100%; height: 100%; object-fit: cover;">
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
                                                 @else
-                                                    Aucun
+                                                    <span>Aucune image</span>
                                                 @endif
                                             </td>
 
 
-
-
-
                                             <td>{{ $annonce->validee ? 'Oui' : 'Non' }}</td>
-                                            <td class="text-right">
+
+                                            <td>
                                                 <!-- Lien pour l'édition -->
-                                                <a href="{{ route('annonce.edit', $annonce->annonce_id) }}" class="btn btn-warning btn-sm ml-2">
+                                                <a href="{{ route('annonce.edit', $annonce->annonce_id) }}"
+                                                    class="btn btn-warning btn-sm ml-2">
                                                     <i class="fa fa-edit"></i> <!-- Icone d'édition -->
                                                 </a>
                                                 <!-- Formulaire pour Supprimer -->
-                                                <form action="{{ route('annonces.destroy', $annonce->annonce_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
+                                                <form action="{{ route('annonces.destroy', $annonce->annonce_id) }}"
+                                                    method="POST" style="display:inline;"
+                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm">

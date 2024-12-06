@@ -2,9 +2,6 @@
 /node_modules
 /public/build
 /public/hot
-/public/storage
-!/public/storage/annonces/ # Exception pour inclure le dossier annonces
-!/public/storage/annonces/.gitkeep # Exception spécifique pour le fichier .gitkeep
 /storage/*.key
 /vendor
 .env

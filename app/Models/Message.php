@@ -21,4 +21,13 @@ class Message extends Model
     {
         return $this->belongsTo(User::class, 'receiver_id');
     }
+    public function receiverSellerProfile()
+    {
+        return $this->belongsTo(User::class, 'receiver_id', 'id')->select(['id', 'name']);
+    }
+
+    public function senderSellerProfile()
+    {
+        return $this->belongsTo(User::class, 'sender_id', 'id')->select(['id', 'name']);
+    }
 }

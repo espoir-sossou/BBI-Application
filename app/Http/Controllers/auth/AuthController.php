@@ -176,43 +176,16 @@ class AuthController extends Controller
         // Redirection vers l'API pour l'authentification Google
         return redirect()->away($response);
     }
-
-    public function userProfil(Request $request)
+    public function userProfil()
     {
-        // Vérifier si l'utilisateur est connecté et si le rôle est 'USER'
-        $userId = session('user_id');
-        $userRole = session('user_role');
-
-        // Récupérer les informations de l'utilisateur depuis la session
-        if ($userId && $userRole && $userRole === 'USER') {
-            // L'utilisateur est connecté et son rôle est 'USER'
-
-            // Récupérer les informations utilisateur depuis la base de données
-            $user = User::find($userId); // Remplace "User" par le nom de ton modèle
-
-            if ($user) {
-                // Créer un tableau avec les informations utilisateur
-                $userData = [
-                    'user_id' => $user->id,
-                    'role' => $user->role,
-                    'email' => $user->email,
-                    'nom' => $user->nom,
-                    'prenom' => $user->prenom,
-                    'telephone' => $user->telephone,
-                    // Ajouter d'autres informations si nécessaire
-                ];
-
-                // Passer les données à la vue
-                return view('Layout.Connexion.Clients.user-profile', ['user' => $userData]);
-            } else {
-                // L'utilisateur n'a pas été trouvé dans la base de données
-                return redirect()->route('loginPage')->with('fail', 'Utilisateur introuvable.');
-            }
-        } else {
-            // Si l'utilisateur n'est pas connecté ou son rôle n'est pas 'USER', rediriger vers la page de connexion
-            return redirect()->route('loginPage');
+        $user = Auth::user(); // Récupération de l'utilisateur connecté
+        if (!$user) {
+            return redirect()->route('login')->with('fail', 'Veuillez vous connecter pour accéder à votre profil.');
         }
+
+        return view('Layout.Connexion.Clients.user-profile', compact('user'));
     }
+
 
     public function signUpPage()
     {
@@ -254,6 +227,7 @@ class AuthController extends Controller
             return back()->withErrors(['message' => $errorMessage]);
         }
     }
+
 
     public function loginPage()
     {
@@ -340,7 +314,7 @@ class AuthController extends Controller
     public function authLogout(Request $request)
     {
         Auth::logout(); // Déconnecte l'utilisateur
-    return redirect()->route('loginPage'); // Redirige vers la page de connexion
+        return redirect()->route('loginPage'); // Redirige vers la page de connexion
     }
     public function authDashboardLogout(Request $request)
     {

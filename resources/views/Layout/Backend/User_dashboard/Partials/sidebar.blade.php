@@ -28,16 +28,16 @@
       <li class="nav-item">
           <a class="nav-link" href="#">
               <i class="fas fa-fw fa-chart-area"></i>
-              <span>Message</span></a>
+              <span>Commandes</span></a>
       </li>
 
-      <!-- Nav Item - Tables -->
+      <!-- Nav Item - Tables
       <li class="nav-item">
           <a class="nav-link" href="#">
               <i class="fas fa-fw fa-table"></i>
               <span>Transactions</span></a>
       </li>
-
+-->
 
   </ul>
   <!-- End of Sidebar -->

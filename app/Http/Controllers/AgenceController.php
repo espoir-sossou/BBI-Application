@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Log;
 use App\Models\User;
 use App\Models\Annonce;
+use App\Models\AnnonceImage;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\OffreEnVedette;
@@ -20,8 +21,47 @@ class AgenceController extends Controller
 {
     public function agenceDashboard()
     {
-        return view('Layout.Backend.Agence_dashboard.index');
+        // Récupérer les informations de l'utilisateur connecté depuis la session
+        $userId = session('user_id');
+        $userRole = session('user_role');
+
+        // Vérifier si l'utilisateur est connecté
+        if (!$userId || !$userRole) {
+            // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+            return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour accéder à cette page.']);
+        }
+
+        // Vérifier si l'utilisateur connecté a le rôle d'agent
+        if ($userRole !== 'AGENCE') {
+            // Rediriger vers une autre page ou afficher un message d'erreur si l'utilisateur n'est pas un agent
+            return redirect()->route('homePage')->withErrors(['error' => 'Accès interdit, vous n\'êtes pas un agent.']);
+        }
+
+        // Récupérer les utilisateurs de type "user" (agents)
+        $agentsUsers = User::where('role', 'USER')->get();  // ou un autre filtre selon votre logique
+        // Passer les utilisateurs à la vue
+        return view('Layout.Backend.Agence_dashboard.index', compact('agentsUsers'));
     }
+    public function agenceProfil()
+    {
+        $adminId = session('user_id'); // Récupération de l'ID de l'agent connecté depuis la session
+
+        // Vérifie si l'ID de l'agent est présent dans la session
+        if (!$adminId) {
+            return redirect()->route('login')->with('fail', 'Veuillez vous connecter pour accéder à votre profil.');
+        }
+
+        // Récupère les informations de l'agent en utilisant l'ID
+        $agent = User::find($adminId); // Ou un modèle spécifique pour les agents, selon ta structure
+
+        if (!$agent) {
+            return redirect()->route('login')->with('fail', 'Agent introuvable.');
+        }
+
+        return view('Layout.Connexion.Clients.agent-profile', compact('agent'));
+    }
+
+
 
     public function annonce()
     {
@@ -37,7 +77,6 @@ class AgenceController extends Controller
         $userId = session('user_id');
         $userRole = session('user_role');
 
-        // Si l'utilisateur n'est pas trouvé dans la session, rediriger vers la page de connexion
         if (!$userId || !$userRole) {
             return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour créer une annonce.']);
         }
@@ -45,7 +84,6 @@ class AgenceController extends Controller
         // Récupérer l'utilisateur en fonction de l'ID de la session
         $user = User::where('user_id', $userId)->first();
 
-        // Vérifier si l'utilisateur existe et est autorisé à créer une annonce
         if (!$user || $user->role !== 'AGENCE') {
             return redirect()->back()->withErrors(['error' => 'Vous n\'êtes pas autorisé à créer une annonce.']);
         }
@@ -54,7 +92,7 @@ class AgenceController extends Controller
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'montant' => 'required|numeric|min:0|max:999999999.99',  // Par exemple, un plafond de 999 millions
+            'montant' => 'required|numeric|min:0|max:999999999.99',
             'typePropriete' => 'required|string|max:255',
             'superficie' => 'nullable|numeric|min:0',
             'nbChambres' => 'nullable|integer|min:0',
@@ -67,44 +105,34 @@ class AgenceController extends Controller
             'garage' => 'nullable|integer|min:0',
             'titreFoncier' => 'nullable|integer|min:0',
             'localite' => 'required|string|max:255',
-            'localisation' => 'nullable|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
             'details' => 'nullable|string',
             'typeTransaction' => 'required|string',
             'visite360' => 'nullable|string|max:255',
             'video' => 'nullable|string|max:255',
-            'image' => 'required|file|mimes:jpeg,png,gif|max:2048',
+            'images.*' => 'nullable|file|mimes:jpeg,png,gif|max:2048',
         ]);
 
-        // Gestion de l'image
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $path = $image->store('annonces', 'public'); // Enregistrement dans le disque public
-            $validatedData['image'] = $path;
+        // Gestion des fichiers images
+    $imagePaths = [];
+    if ($request->hasFile('images')) {
+        $images = $request->file('images');
+        foreach ($images as $image) {
+            if ($image->isValid()) {
+                $path = $image->store('annonces', 'public'); // Stocke dans le système de fichiers
+                $imagePaths[] = $path; // Conserve le chemin pour enregistrement
+            }
         }
+    }
 
-
-
-        // Définit les valeurs par défaut pour les cases à cocher si elles ne sont pas cochées
-        $validatedData['veranda'] = $validatedData['veranda'] ?? 0;
-        $validatedData['terrasse'] = $validatedData['terrasse'] ?? 0;
-        $validatedData['cuisine'] = $validatedData['cuisine'] ?? 0;
-        $validatedData['dependance'] = $validatedData['dependance'] ?? 0;
-        $validatedData['piscine'] = $validatedData['piscine'] ?? 0;
-        $validatedData['garage'] = $validatedData['garage'] ?? 0;
-        $validatedData['titreFoncier'] = $validatedData['titreFoncier'] ?? 0;
-
-        // Trouver l'admin dont le rôle est 'ADMIN' dans la table users
+        // Trouver l'administrateur
         $admin = User::where('role', 'ADMIN')->first();
-
-        // Vérifier s'il existe un admin dans la base de données
         if (!$admin) {
             return redirect()->back()->withErrors(['error' => 'Aucun administrateur trouvé.']);
         }
 
-        // Enregistrer la date de création
-        $validatedData['dateCreation'] = now();
-
-        // Création de l'annonce avec les données validées
+        // Enregistrement de l'annonce
         $annonce = new Annonce();
         $annonce->titre = $validatedData['titre'];
         $annonce->description = $validatedData['description'] ?? null;
@@ -113,41 +141,47 @@ class AgenceController extends Controller
         $annonce->superficie = $validatedData['superficie'] ?? null;
         $annonce->nbChambres = $validatedData['nbChambres'] ?? null;
         $annonce->nbSalleDeDouche = $validatedData['nbSalleDeDouche'] ?? null;
-        $annonce->veranda = $validatedData['veranda'];
-        $annonce->terrasse = $validatedData['terrasse'];
-        $annonce->cuisine = $validatedData['cuisine'];
-        $annonce->dependance = $validatedData['dependance'];
-        $annonce->piscine = $validatedData['piscine'];
-        $annonce->garage = $validatedData['garage'];
-        $annonce->titreFoncier = $validatedData['titreFoncier'];
+        $annonce->veranda = $validatedData['veranda'] ?? 0;
+        $annonce->terrasse = $validatedData['terrasse'] ?? 0;
+        $annonce->cuisine = $validatedData['cuisine'] ?? 0;
+        $annonce->dependance = $validatedData['dependance'] ?? 0;
+        $annonce->piscine = $validatedData['piscine'] ?? 0;
+        $annonce->garage = $validatedData['garage'] ?? 0;
+        $annonce->titreFoncier = $validatedData['titreFoncier'] ?? 0;
         $annonce->localite = $validatedData['localite'];
-        $annonce->localisation = $validatedData['localisation'] ?? null;
+        $annonce->latitude = $validatedData['latitude'];
+        $annonce->longitude = $validatedData['longitude'];
         $annonce->details = $validatedData['details'] ?? null;
         $annonce->typeTransaction = $validatedData['typeTransaction'];
         $annonce->visite360 = $validatedData['visite360'] ?? null;
         $annonce->video = $validatedData['video'] ?? null;
-        $annonce->image = $validatedData['image'];
-        $annonce->dateCreation = $validatedData['dateCreation'];
-        $annonce->validee = false; // Par défaut, l'annonce n'est pas validée
-        $annonce->user_id = $user->user_id; // Associer l'annonce à l'utilisateur connecté
-        $annonce->admin_id = $admin->user_id; // Associer l'ID de l'admin trouvé
-        // Enregistrement de l'annonce
+        $annonce->dateCreation = now();
+        $annonce->validee = false;
+        $annonce->user_id = $user->user_id;
+        $annonce->admin_id = $admin->user_id;
         $annonce->save();
 
-        // Envoi de la notification push
+        // Enregistrer les chemins d'images dans la base de données
+        foreach ($imagePaths as $imagePath) {
+            AnnonceImage::create([
+                'annonce_id' => $annonce->annonce_id,
+                'path' => $imagePath,
+            ]);
+        }
+
+        // Notification et email
         Notification::create([
-            'user_id' => $admin->user_id, // Vous pouvez envoyer la notification à l'admin ou à d'autres utilisateurs
+            'user_id' => $admin->user_id,
             'message' => 'Une nouvelle annonce a été créée : ' . $annonce->titre,
             'is_read' => false,
-            'type' => 'push', // Type de notification (push dans ce cas)
+            'type' => 'push',
         ]);
 
-        // Envoi de l'email à l'admin
-        Mail::to($admin->email)->send(new NewAnnonceCreatedMail($annonce)); // Assurez-vous de créer une classe de mail pour l'admin
+        Mail::to($admin->email)->send(new NewAnnonceCreatedMail($annonce));
 
-        // Redirection avec un message de succès
         return redirect()->route('annonce.liste')->with('success', 'Annonce créée avec succès !');
     }
+
     public function annonceListe()
     {
         // Récupérer les informations de l'utilisateur connecté
@@ -194,25 +228,20 @@ class AgenceController extends Controller
     }
     public function annonceUpdate(Request $request, $annonce_id)
     {
-        // Vérification de l'existence de l'utilisateur connecté
         $userId = session('user_id');
         $userRole = session('user_role');
 
-        // Si l'utilisateur n'est pas trouvé dans la session, rediriger vers la page de connexion
         if (!$userId || !$userRole) {
             return redirect()->route('loginPage')->withErrors(['error' => 'Veuillez vous connecter pour mettre à jour l\'annonce.']);
         }
 
-        // Vérifier si l'utilisateur est autorisé à modifier cette annonce
         $user = User::where('user_id', $userId)->first();
         if (!$user || $user->role !== 'AGENCE') {
             return redirect()->back()->withErrors(['error' => 'Vous n\'êtes pas autorisé à modifier cette annonce.']);
         }
 
-        // Récupérer l'annonce par son ID
         $annonce = Annonce::findOrFail($annonce_id);
 
-        // Validation des données du formulaire
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -221,42 +250,48 @@ class AgenceController extends Controller
             'superficie' => 'nullable|numeric|min:0',
             'nbChambres' => 'nullable|integer|min:0',
             'nbSalleDeDouche' => 'nullable|integer|min:0',
-            'veranda' => 'nullable|integer|min:0',
-            'terrasse' => 'nullable|integer|min:0',
-            'cuisine' => 'nullable|integer|min:0',
-            'dependance' => 'nullable|integer|min:0',
-            'piscine' => 'nullable|integer|min:0',
-            'garage' => 'nullable|integer|min:0',
-            'titreFoncier' => 'nullable|integer|min:0',
             'localite' => 'required|string|max:255',
-            'localisation' => 'nullable|string|max:255',
-            'details' => 'nullable|string',
             'typeTransaction' => 'required|string',
-            'visite360' => 'nullable|string|max:255',
-            'video' => 'nullable|string|max:255',
-            'image' => 'required|file|mimes:jpeg,png,gif|max:2048',
+            'remove_images.*' => 'nullable|integer',
+            'new_images.*' => 'nullable|file|mimes:jpeg,png,gif|max:2048',
         ]);
 
-        // Gestion de l'image
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $path = $image->store('annonces', 'public'); // Enregistrement dans le disque public
-            $validatedData['image'] = $path;
-        }
-
-        // Mise à jour de l'annonce avec les nouvelles données validées
+        // Mise à jour des informations de l'annonce
         $annonce->update($validatedData);
 
-        // Envoi de la notification push
+        // Gestion des images à supprimer
+        if (!empty($request->remove_images)) {
+            foreach ($request->remove_images as $imageId) {
+                $image = AnnonceImage::findOrFail($imageId);
+                Storage::delete('public/' . $image->path);
+                $image->delete();
+            }
+        }
+
+        // Gestion des nouvelles images
+        if ($request->hasFile('new_images')) {
+            $newImages = $request->file('new_images');
+            foreach ($newImages as $newImage) {
+                if ($newImage->isValid()) {
+                    $path = $newImage->store('annonces', 'public');
+                    AnnonceImage::create([
+                        'annonce_id' => $annonce->annonce_id,
+                        'path' => $path,
+                    ]);
+                }
+            }
+        }
+
         Notification::create([
             'user_id' => $user->user_id,
             'message' => 'L\'annonce "' . $annonce->titre . '" a été mise à jour.',
             'is_read' => false,
             'type' => 'push',
         ]);
-        // Redirection avec un message de succès
+
         return redirect()->route('annonce.liste')->with('success', 'Annonce mise à jour avec succès !');
     }
+
 
 
 

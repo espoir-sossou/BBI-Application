@@ -12,7 +12,15 @@ class UserController extends Controller
     {
         return view('Layout.Backend.User_dashboard.index');
     }
+    public function userProfil()
+    {
+        $user = Auth::user(); // Récupération de l'utilisateur connecté
+        if (!$user) {
+            return redirect()->route('login')->with('fail', 'Veuillez vous connecter pour accéder à votre profil.');
+        }
 
+        return view('Layout.Connexion.Clients.user-profile', compact('user'));
+    }
     public function redirectToDashboard()
     {
         if (Auth::check()) {
@@ -44,7 +52,7 @@ class UserController extends Controller
 
 
 
-    
+
 
 
     public function userTable()
