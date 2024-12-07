@@ -115,16 +115,16 @@ class AgenceController extends Controller
         ]);
 
         // Gestion des fichiers images
-    $imagePaths = [];
-    if ($request->hasFile('images')) {
-        $images = $request->file('images');
-        foreach ($images as $image) {
-            if ($image->isValid()) {
-                $path = $image->store('annonces', 'public'); // Stocke dans le système de fichiers
-                $imagePaths[] = $path; // Conserve le chemin pour enregistrement
+        $imagePaths = [];
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            foreach ($images as $image) {
+                if ($image->isValid()) {
+                    $path = $image->store('annonces', 'public'); // Stocke dans le système de fichiers
+                    $imagePaths[] = $path; // Conserve le chemin pour enregistrement
+                }
             }
         }
-    }
 
         // Trouver l'administrateur
         $admin = User::where('role', 'ADMIN')->first();
@@ -263,8 +263,8 @@ class AgenceController extends Controller
         if (!empty($request->remove_images)) {
             foreach ($request->remove_images as $imageId) {
                 $image = AnnonceImage::findOrFail($imageId);
-                Storage::delete('public/' . $image->path);
-                $image->delete();
+                Storage::delete('public/' . $image->path); // Supprimer physiquement l'image
+                $image->delete(); // Supprimer l'enregistrement dans la base
             }
         }
 
@@ -273,10 +273,10 @@ class AgenceController extends Controller
             $newImages = $request->file('new_images');
             foreach ($newImages as $newImage) {
                 if ($newImage->isValid()) {
-                    $path = $newImage->store('annonces', 'public');
+                    $path = $newImage->store('annonces', 'public'); // Stocke dans le système de fichiers
                     AnnonceImage::create([
                         'annonce_id' => $annonce->annonce_id,
-                        'path' => $path,
+                        'path' => $path, // Enregistre le chemin de l'image dans la base
                     ]);
                 }
             }

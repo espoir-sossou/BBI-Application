@@ -64,7 +64,7 @@
 
     <!-- Template Main CSS File
     <link href="<?php echo e(asset('Frontend/Lending/assets/css/main.css')); ?>" rel="stylesheet">
-     -->
+-->
 
     <style>
         /* Masquer la section Vendor sur les petits écrans (mobile) */

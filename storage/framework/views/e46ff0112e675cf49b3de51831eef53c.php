@@ -147,7 +147,8 @@
                 <div id="existingImagesPreview" class="mt-2">
                     <?php $__currentLoopData = $annonce->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="existing-image">
-                            <img src="<?php echo e(Storage::url($image->path)); ?>" alt="Image" style="max-width: 100px; margin: 5px;">
+                            <img src="<?php echo e(Storage::url($image->path)); ?>" alt="Image"
+                                style="max-width: 100px; margin: 5px;">
                             <label>
                                 <input type="checkbox" name="remove_images[]" value="<?php echo e($image->id); ?>"> Supprimer
                             </label>
@@ -156,44 +157,94 @@
                 </div>
             </div>
 
+            <!-- Localisation -->
             <div class="form-group">
-                <label for="newImages">Ajouter de nouvelles images</label>
-                <input id="newImages" type="file" class="form-control-file" name="new_images[]" accept="image/*" multiple onchange="previewNewImages(event)">
-                <div id="newImagesPreview" class="mt-2"></div>
-                <?php $__errorArgs = ['new_images.*'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                    <div class="text-danger"><?php echo e($message); ?></div>
-                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
+                <label for="localisation">Localisation (cliquez sur la carte)</label>
+                <div id="map" style="height: 400px;"></div>
+                <input type="hidden" id="latitude" name="latitude" value="<?php echo e(old('latitude', $annonce->latitude)); ?>">
+                <input type="hidden" id="longitude" name="longitude"
+                    value="<?php echo e(old('longitude', $annonce->longitude)); ?>">
             </div>
 
-            <script>
-                function previewNewImages(event) {
-                    const previewContainer = document.getElementById('newImagesPreview');
-                    const files = event.target.files;
+            <!-- Images existantes -->
+            <div class="form-group">
+                <label>Images existantes</label>
+                <div>
+                    <?php $__currentLoopData = $annonce->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div style="display: inline-block; margin: 5px; text-align: center;">
+                            <img src="<?php echo e(asset('storage/' . $image->path)); ?>" style="max-width: 100px;">
+                            <br>
+                            <input type="checkbox" name="remove_images[]" value="<?php echo e($image->id); ?>"> Supprimer
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>
 
-                    previewContainer.innerHTML = ''; // Réinitialiser l'aperçu
+            <!-- Ajouter de nouvelles images -->
+            <div class="form-group">
+                <label for="newImages">Ajouter de nouvelles images</label>
+                <input id="newImages" type="file" class="form-control-file" name="new_images[]" accept="image/*"
+                    multiple onchange="previewNewImages(event)">
+                <div id="newImagesPreview" class="mt-2"></div>
+            </div>
 
-                    Array.from(files).forEach(file => {
-                        const img = document.createElement('img');
-                        img.src = URL.createObjectURL(file);
-                        img.style.maxWidth = '100px';
-                        img.style.margin = '5px';
-                        previewContainer.appendChild(img);
-                    });
-                }
-            </script>
-
-
-            <!-- Boutons -->
-            <button type="submit" class="btn btn-primary mt-3">Mettre à jour l'annonce</button>
-            <a href="<?php echo e(route('annonce.liste')); ?>" class="btn btn-secondary mt-3">Annuler</a>
+            <!-- Bouton de soumission -->
+            <button type="submit" class="btn btn-primary">Mettre à jour</button>
         </form>
+
+        <script>
+            function initMap() {
+                const defaultCenter = {
+                    lat: parseFloat(document.getElementById('latitude').value) || 0,
+                    lng: parseFloat(document.getElementById('longitude').value) || 0
+                };
+
+                const map = new google.maps.Map(document.getElementById('map'), {
+                    center: defaultCenter,
+                    zoom: 8,
+                });
+
+                // Ajouter un marqueur initial si des coordonnées existent
+                const marker = new google.maps.Marker({
+                    position: defaultCenter,
+                    map: map,
+                });
+
+                google.maps.event.addListener(map, 'click', function(event) {
+                    const lat = event.latLng.lat();
+                    const lng = event.latLng.lng();
+
+                    // Mettre à jour le marqueur
+                    marker.setPosition({
+                        lat,
+                        lng
+                    });
+
+                    // Mettre à jour les champs cachés
+                    document.getElementById('latitude').value = lat;
+                    document.getElementById('longitude').value = lng;
+                });
+            }
+
+            function previewNewImages(event) {
+                const previewContainer = document.getElementById('newImagesPreview');
+                const files = event.target.files;
+
+                previewContainer.innerHTML = ''; // Réinitialiser l'aperçu
+
+                Array.from(files).forEach(file => {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.style.maxWidth = '100px';
+                    img.style.margin = '5px';
+                    previewContainer.appendChild(img);
+                });
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrntgALGzUGdJNxYhC5Nb_rOmSxhuRsZM&callback=initMap" async
+            defer></script>
+
+
 
     </div>
 <?php $__env->stopSection(); ?>
