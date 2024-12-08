@@ -2,45 +2,29 @@
 <html lang="en">
 
 <head>
-    <!-- Meta tags pour une meilleure prévisualisation sur les réseaux sociaux -->
+    <!-- Meta tags pour réseaux sociaux -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $annonceDetail->titre ?? 'Détails de l\'annonce' }}</title>
 
-    <!-- Titre pour la prévisualisation sur les réseaux sociaux -->
-    <meta property="og:title" content="{{ $annonceDetail->titre }}">
-
-    <!-- Description pour la prévisualisation sur les réseaux sociaux -->
-    <meta property="og:description" content="{{ $annonceDetail->description }}">
-
-    <!-- URL de la page pour les réseaux sociaux -->
+    <meta property="og:title" content="{{ $annonceDetail->titre ?? 'Détails de l\'annonce' }}">
+    <meta property="og:description" content="{{ $annonceDetail->description ?? 'Découvrez notre annonce.' }}">
     <meta property="og:url" content="{{ url()->current() }}">
-
-    <!-- Image pour la prévisualisation sur les réseaux sociaux -->
-    <meta property="og:image" content="{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}">
-
-    <!-- Type de contenu partagé (article, vidéo, etc.) -->
+    <meta property="og:image"
+        content="{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}">
     <meta property="og:type" content="article">
-
-    <!-- Le nom de l'auteur ou de la page (optionnel) -->
     <meta property="og:site_name" content="Nom de votre site">
 
-    <!-- Image pour Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $annonceDetail->titre }}">
-    <meta name="twitter:description" content="{{ $annonceDetail->description }}">
-    <meta name="twitter:image" content="{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}">
+    <meta name="twitter:title" content="{{ $annonceDetail->titre ?? 'Détails de l\'annonce' }}">
+    <meta name="twitter:description" content="{{ $annonceDetail->description ?? 'Découvrez notre annonce.' }}">
+    <meta name="twitter:image"
+        content="{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}">
 
-    <!-- Définir la langue de la page (optionnel) -->
-    <meta http-equiv="Content-Language" content="fr">
-
-    <!-- Autres meta-tags utiles -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $annonceDetail->titre }}</title>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galerie d'images - Annonce</title>
+    <!-- CSS et JS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
@@ -141,88 +125,84 @@
                 </a>
             </div>
         </div>
-
-        <!-- Modal Share -->
-        <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-bottom">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="shareModalLabel">Partager cette annonce</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="d-flex flex-row justify-content-center gap-2">
-                            <a href="#" id="facebook" target="_blank" class="share-icon" style="color: #3b5998;">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="#" id="twitter" target="_blank" class="share-icon"
-                                style="color: #1da1f2;">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" id="whatsapp" target="_blank" class="share-icon"
-                                style="color: #25d366;">
-                                <i class="fab fa-whatsapp"></i>
-                            </a>
-                            <a href="#" id="linkedin" target="_blank" class="share-icon"
-                                style="color: #0077b5;">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href="#" id="pinterest" target="_blank" class="share-icon"
-                                style="color: #e60023;">
-                                <i class="fab fa-pinterest"></i>
-                            </a>
-                        </div>
-                    </div>
+ <!-- Modal de partage -->
+ <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-bottom">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareModalLabel">Partager cette annonce</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-row justify-content-center gap-2">
+                    <a id="facebook" target="_blank" class="share-icon" style="color: #3b5998;">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a id="twitter" target="_blank" class="share-icon" style="color: #1da1f2;">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a id="whatsapp" target="_blank" class="share-icon" style="color: #25d366;">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Script JS -->
+<script>
+    document.querySelector('#share-btn').addEventListener('click', function () {
+        const url = "{{ url()->current() }}";
+        document.getElementById('facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        document.getElementById('twitter').href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
+        document.getElementById('whatsapp').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`;
+        new bootstrap.Modal(document.getElementById('shareModal')).show();
+    });
+</script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.querySelector('#share-btn').addEventListener('click', function() {
                 const title = "{{ $annonceDetail->titre }}"; // Titre de l'annonce
                 const description = "{{ $annonceDetail->description }}"; // Description de l'annonce
-                const typePropriete = "{{ $annonceDetail->typePropriete }}"; // Type de propriété
-                const titreFoncier = "{{ $annonceDetail->titreFoncier ? 'PERMIS D\'HABITER' : 'Non' }}"; // Titre de propriété
                 const montant = "{{ number_format($annonceDetail->montant, 0, ',', ' ') }} XOF"; // Montant
-                const url = window.location.href; // URL de l'annonce
-                const image = "{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}";
+                const url = window.location.href; // URL actuelle
+                const image =
+                    "{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}";
 
-                // Construire le texte de partage
-                const shareText = `
-                <img src="${image}" alt="Image de l'annonce" style="width: 100%; height: auto; border-radius: 8px; margin-bottom: 15px;" />
-                ${title} – ${description}
-                Type de propriété: ${typePropriete}
-                Prix de vente: ${montant}
-                Lien: ${url}
-                Infoline : wa.me/2290196910901
-                Téléphone : (+229) 01 9691 0901 / (+229) 01 4015 6804
-                E-mail : info@bolivebusinessinter.bj
-                `;
+                // Texte de partage
+                const shareText = `${title} - ${description} (${montant})\n${url}`;
 
-                // Encoder les informations pour les partager
-                const encodedShareText = encodeURIComponent(shareText);
-                const encodedImageUrl = encodeURIComponent(image);
+                // Encoder les informations
+                const encodedText = encodeURIComponent(shareText);
+                const encodedUrl = encodeURIComponent(url);
+                const encodedImage = encodeURIComponent(image);
 
-                // URL de partage pour les différentes plateformes
-                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedShareText}`;
-                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedShareText}`;
-                const linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${encodedShareText}&summary=${description}&source=${url}`;
-                const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${url}&media=${encodedImageUrl}&description=${encodedShareText}`;
+                // URLs de partage pour chaque plateforme
+                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+                const linkedinUrl =
+                    `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedText}`;
+                const pinterestUrl =
+                    `https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${encodedImage}&description=${encodedText}`;
 
-                // Définir les attributs href pour les icônes de partage
-                document.getElementById('facebook').setAttribute('href', facebookUrl);
-                document.getElementById('twitter').setAttribute('href', twitterUrl);
-                document.getElementById('whatsapp').setAttribute('href', whatsappUrl);
-                document.getElementById('linkedin').setAttribute('href', linkedinUrl);
-                document.getElementById('pinterest').setAttribute('href', pinterestUrl);
+                // Mettre à jour les attributs href des icônes
+                document.getElementById('facebook').href = facebookUrl;
+                document.getElementById('twitter').href = twitterUrl;
+                document.getElementById('whatsapp').href = whatsappUrl;
+                document.getElementById('linkedin').href = linkedinUrl;
+                document.getElementById('pinterest').href = pinterestUrl;
 
-                // Afficher le modal
+                // Affiche une modale (optionnel)
                 const modal = new bootstrap.Modal(document.getElementById('shareModal'));
                 modal.show();
             });
         </script>
+
+
+
 
         <style>
             /* Modal style */
