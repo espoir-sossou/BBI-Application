@@ -153,53 +153,16 @@
 <!-- Script JS -->
 <script>
     document.querySelector('#share-btn').addEventListener('click', function () {
+        event.preventDefault(); // Empêche l'action par défaut de la balise <a>
         const url = "{{ url()->current() }}";
-        document.getElementById('facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-        document.getElementById('twitter').href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
-        document.getElementById('whatsapp').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`;
+        document.getElementById('facebook').href = https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)};
+        document.getElementById('twitter').href = https://twitter.com/intent/tweet?url=${encodeURIComponent(url)};
+        document.getElementById('whatsapp').href = https://api.whatsapp.com/send?text=${encodeURIComponent(url)};
         new bootstrap.Modal(document.getElementById('shareModal')).show();
     });
 </script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            document.querySelector('#share-btn').addEventListener('click', function() {
-                const title = "{{ $annonceDetail->titre }}"; // Titre de l'annonce
-                const description = "{{ $annonceDetail->description }}"; // Description de l'annonce
-                const montant = "{{ number_format($annonceDetail->montant, 0, ',', ' ') }} XOF"; // Montant
-                const url = window.location.href; // URL actuelle
-                const image =
-                    "{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}";
-
-                // Texte de partage
-                const shareText = `${title} - ${description} (${montant})\n${url}`;
-
-                // Encoder les informations
-                const encodedText = encodeURIComponent(shareText);
-                const encodedUrl = encodeURIComponent(url);
-                const encodedImage = encodeURIComponent(image);
-
-                // URLs de partage pour chaque plateforme
-                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
-                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
-                const linkedinUrl =
-                    `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedText}`;
-                const pinterestUrl =
-                    `https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${encodedImage}&description=${encodedText}`;
-
-                // Mettre à jour les attributs href des icônes
-                document.getElementById('facebook').href = facebookUrl;
-                document.getElementById('twitter').href = twitterUrl;
-                document.getElementById('whatsapp').href = whatsappUrl;
-                document.getElementById('linkedin').href = linkedinUrl;
-                document.getElementById('pinterest').href = pinterestUrl;
-
-                // Affiche une modale (optionnel)
-                const modal = new bootstrap.Modal(document.getElementById('shareModal'));
-                modal.show();
-            });
-        </script>
 
 
 
