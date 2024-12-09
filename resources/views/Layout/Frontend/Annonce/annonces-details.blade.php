@@ -8,10 +8,11 @@
     <title>{{ $annonceDetail->titre ?? 'Détails de l\'annonce' }}</title>
 
     <meta property="og:title" content="{{ $annonceDetail->titre }}" />
-<meta property="og:description" content="{{ $annonceDetail->description }}" />
-<meta property="og:image" content="{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}" />
-<meta property="og:url" content="{{ url()->current() }}" />
-<meta property="og:type" content="website" />
+    <meta property="og:description" content="{{ $annonceDetail->description }}" />
+    <meta property="og:image"
+        content="{{ $annonceDetail->images->isNotEmpty() ? Storage::url($annonceDetail->images->first()->path) : asset('Frontend/Home/assets/imgs/default.jpg') }}" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
 
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -116,16 +117,18 @@
                                                         <i class="fas fa-search-plus me-2"></i>Visite 360°
                                                     </button>
                                                 </a>-->
-                                                <a href="javascript:void(0);">
-                                                    <button id="share-btn" class="btn btn-dark"
-                                                        data-title="{{ $annonceDetail->titre }}"
-                                                        data-description="{{ $annonceDetail->description }}"
-                                                        data-url="{{ url()->current() }}"
-                                                        data-image="{{ $annonceDetail->images->isNotEmpty() ? url(Storage::url($annonceDetail->images->first()->path)) : url(asset('Frontend/Home/assets/imgs/default.jpg')) }}"
-                                                        style="border-radius: 25px; padding: 0.75rem 1.5rem;">
-                                                        <i class="fas fa-share me-2"></i>Partager
-                                                    </button>
-                                                </a>
+                <a href="javascript:void(0);">
+                    <button id="share-btn" class="btn btn-dark" data-title="{{ $annonceDetail->titre }}"
+                        data-description="{{ $annonceDetail->description }}"
+                        data-type-propriete="{{ $annonceDetail->typePropriete }}"
+                        data-montant="{{ $annonceDetail->montant }}" data-localite="{{ $annonceDetail->localite }}"
+                        data-url="{{ url()->current() }}"
+                        data-image="{{ $annonceDetail->images->isNotEmpty() ? url(Storage::url($annonceDetail->images->first()->path)) : url(asset('Frontend/Home/assets/imgs/default.jpg')) }}"
+                        style="border-radius: 25px; padding: 0.75rem 1.5rem;">
+                        <i class="fas fa-share me-2"></i>Partager
+                    </button>
+                </a>
+
 
 
 
@@ -161,22 +164,39 @@
             document.querySelector('#share-btn').addEventListener('click', function(event) {
                 event.preventDefault();
 
-                const url = "{{ url()->current() }}";
-                const title = this.dataset.title; // Récupérer le titre depuis l'attribut data-title
-                const description = this.dataset.description; // Récupérer la description depuis l'attribut data-description
-                const image = this.dataset.image; // Récupérer l'image depuis l'attribut data-image
+                const url = this.dataset.url; // URL actuelle
+                const title = this.dataset.title; // Titre de l'annonce
+                const description = this.dataset.description; // Description de l'annonce
+                const typePropriete = this.dataset.typePropriete; // Type de propriété
+                const montant = this.dataset.montant; // Montant
+                const localite = this.dataset.localite; // Localité
+                const image = this.dataset.image; // Image de l'annonce
 
-                // Lien pour Facebook
-                document.getElementById('facebook').href =
-                    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                // Contenu par défaut à ajouter à la fin
+                const defaultInfo = `
+            https://www.bolivebusinessinter.bj/annonce/eud-788/
+            Infoline : wa.me/2290196910901
+            (+229) 01 9691 0901 / (+229) 01 4015 6804
+            E-mail : info@bolivebusinessinter.bj`;
 
-                // Lien pour Twitter
-                document.getElementById('twitter').href =
-                    `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title + " - " + description)}`;
+                // Texte complet pour WhatsApp
+                const whatsappText = `
+            ${title}
+            ${description}
+            Type de propriété : ${typePropriete}
+            Montant : ${montant}
+            Localité : ${localite}
+            
+            Images: ${image}
 
-                // Lien pour WhatsApp (inclut image, URL, titre et description)
+            Lien : ${url}
+
+            ${defaultInfo}
+    `;
+
+                // Lien pour WhatsApp (inclut tous les éléments formatés)
                 document.getElementById('whatsapp').href =
-                    `https://api.whatsapp.com/send?text=${encodeURIComponent(image + "\n" + url + "\n" + title + "\n" + description)}`;
+                    `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappText)}`;
 
                 // Affiche le modal
                 new bootstrap.Modal(document.getElementById('shareModal')).show();
