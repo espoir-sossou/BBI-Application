@@ -2,8 +2,18 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Bolivie Business Inter</title>
+    <title>@yield('meta_title', 'Bolivie Business Inter')</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="@yield('meta_description', 'Description par défaut de votre site.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'annonces, business, immobilier')">
+
+    <!-- Open Graph Meta -->
+    <meta property="og:title" content="@yield('og_title', 'Bolivie Business Inter')">
+    <meta property="og:description" content="@yield('og_description', 'Description par défaut pour le partage.')">
+    <meta property="og:url" content="@yield('og_url', url()->current())">
+    <meta property="og:image" content="@yield('og_image', asset('Frontend/Home/assets/imgs/default.jpg'))">
+
+    
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('Frontend/Home/assets/imgs/logo_bbi.png') }}">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">

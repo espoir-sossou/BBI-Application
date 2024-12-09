@@ -2,8 +2,18 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Bolivie Business Inter</title>
+    <title><?php echo $__env->yieldContent('meta_title', 'Bolivie Business Inter'); ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<?php echo $__env->yieldContent('meta_description', 'Description par défaut de votre site.'); ?>">
+    <meta name="keywords" content="<?php echo $__env->yieldContent('meta_keywords', 'annonces, business, immobilier'); ?>">
+
+    <!-- Open Graph Meta -->
+    <meta property="og:title" content="<?php echo $__env->yieldContent('og_title', 'Bolivie Business Inter'); ?>">
+    <meta property="og:description" content="<?php echo $__env->yieldContent('og_description', 'Description par défaut pour le partage.'); ?>">
+    <meta property="og:url" content="<?php echo $__env->yieldContent('og_url', url()->current()); ?>">
+    <meta property="og:image" content="<?php echo $__env->yieldContent('og_image', asset('Frontend/Home/assets/imgs/default.jpg')); ?>">
+
+    
     <link rel="shortcut icon" type="image/x-icon" href="<?php echo e(asset('Frontend/Home/assets/imgs/logo_bbi.png')); ?>">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
