@@ -261,7 +261,7 @@
                         <!-- Si l'utilisateur est connecté -->
                         <a href="{{ route('user.dashboard') }}">
                             <button class="dropdown-item" type="button" style="color: #318093">
-                                Compte
+
                             </button>
                         </a>
                         <form id="logout-form" action="{{ route('authLogout') }}" method="POST" style="display: none;">
@@ -390,7 +390,7 @@
                             <i class="fa fa-exchange-alt" style="color: #318093;"></i> <span></span>
                         </button>
                     </li>
-                </a> -->   
+                </a> -->
                 <li class="nav-item">
                     <a href="{{ route('favoris') }}">
                         <button type="button"
@@ -440,7 +440,7 @@
                                 @auth
                                     {{ Auth::user()->nom }} {{ Auth::user()->prenom }}
                                 @else
-                                    Compte
+                                    
                                 @endauth
                             </span>
                         </button>

@@ -158,12 +158,12 @@
                                         <li>
                                             <i class="fa fa-file-alt" style="color: #318093; font-size: 18px;"
                                                 title="Titre foncier"></i>
-                                            <span><?php echo e($annonce->garage ? 'Oui' : 'Non'); ?></span>
+                                            <span><?php echo e($annonce->garage ? '1' : '0'); ?></span>
                                         </li>
                                         <li>
                                             <i class="fa fa-swimming-pool" style="color: #318093; font-size: 18px;"
                                                 title="Piscine"></i>
-                                            <span><?php echo e($annonce->piscine ? 'Oui' : 'Non'); ?></span>
+                                            <span><?php echo e($annonce->piscine ? '1' : '0'); ?></span>
                                         </li>
                                     </ul>
 

@@ -262,7 +262,7 @@
                         <!-- Si l'utilisateur est connecté -->
                         <a href="<?php echo e(route('user.dashboard')); ?>">
                             <button class="dropdown-item" type="button" style="color: #318093">
-                                Compte
+
                             </button>
                         </a>
                         <form id="logout-form" action="<?php echo e(route('authLogout')); ?>" method="POST" style="display: none;">
@@ -391,7 +391,7 @@
                             <i class="fa fa-exchange-alt" style="color: #318093;"></i> <span></span>
                         </button>
                     </li>
-                </a> -->   
+                </a> -->
                 <li class="nav-item">
                     <a href="<?php echo e(route('favoris')); ?>">
                         <button type="button"
@@ -443,7 +443,7 @@
                                     <?php echo e(Auth::user()->nom); ?> <?php echo e(Auth::user()->prenom); ?>
 
                                 <?php else: ?>
-                                    Compte
+                                    
                                 <?php endif; ?>
                             </span>
                         </button>
