@@ -337,13 +337,34 @@ public function adminDashboard()
                     <li><strong>Superficie :</strong> {{ $annonceDetail->superficie }} m²</li>
                     <li><strong>Nombre de chambres :</strong> {{ $annonceDetail->nbChambres }}</li>
                     <li><strong>Nombre de salles de bain :</strong> {{ $annonceDetail->nbSalleDeDouche }}</li>
-                    <li><strong>Veranda :</strong> {{ $annonceDetail->veranda ? 'Oui' : 'Non' }}</li>
-                    <li><strong>Terrasse :</strong> {{ $annonceDetail->terrasse ? 'Oui' : 'Non' }}</li>
-                    <li><strong>Cuisine :</strong> {{ $annonceDetail->cuisine ? 'Oui' : 'Non' }}</li>
-                    <li><strong>Dépendance :</strong> {{ $annonceDetail->dependance ? 'Oui' : 'Non' }}</li>
-                    <li><strong>Piscine :</strong> {{ $annonceDetail->piscine ? 'Oui' : 'Non' }}</li>
-                    <li><strong>Garage :</strong> {{ $annonceDetail->garage ? 'Oui' : 'Non' }}</li>
-                    <li><strong>Titre foncier :</strong> {{ $annonceDetail->titreFoncier ? 'Oui' : 'Non' }}</li>
+                    @if ($annonceDetail->veranda)
+                    <li><strong>Veranda :</strong> Oui</li>
+                @endif
+
+                @if ($annonceDetail->terrasse)
+                    <li><strong>Terrasse :</strong> Oui</li>
+                @endif
+
+                @if ($annonceDetail->cuisine)
+                    <li><strong>Cuisine :</strong> Oui</li>
+                @endif
+
+                @if ($annonceDetail->dependance)
+                    <li><strong>Dépendance :</strong> Oui</li>
+                @endif
+
+                @if ($annonceDetail->piscine)
+                    <li><strong>Piscine :</strong> Oui</li>
+                @endif
+
+                @if ($annonceDetail->garage)
+                    <li><strong>Garage :</strong> Oui</li>
+                @endif
+
+                @if ($annonceDetail->titreFoncier)
+                    <li><strong>Titre foncier :</strong> Oui</li>
+                @endif
+
                     <li><strong>Localité :</strong> {{ $annonceDetail->localite }}</li>
                 </ul>
 
@@ -526,6 +547,7 @@ public function adminDashboard()
     </style>
 
 @endsection
+
 ----------------------------------------------------------------
 <!DOCTYPE html>
 <html lang="en">

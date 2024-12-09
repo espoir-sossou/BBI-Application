@@ -228,7 +228,7 @@ Route::middleware(['no-back-history',])->group(function () {
     Route::get('/agence/messages/{receiver_id}', [MessageController::class, 'agenceChat'])->name('agence.messages.chat');
     Route::get('/list/messages/users', [MessageController::class, 'listMessageUsers'])->name('list.messages.users');
 
-    // Route modifiée
+    // Route modifiée 
     Route::post('/agence/messages/{receiver_id}', [MessageController::class, 'agenceSendMessage'])->name('agence.messages.send');
 
     Route::get('/conversations', [MessageController::class, 'index'])->name('chat.index');
