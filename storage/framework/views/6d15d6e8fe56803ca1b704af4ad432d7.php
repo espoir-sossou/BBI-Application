@@ -62,10 +62,10 @@
                     </form>
                     <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
                     <div class="d-flex">
-                        <a class="btn btn-square mr-2" href="#" style="background-color:#318093; color:white"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-square mr-2" href="#" style="background-color:#318093; color:white"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-square mr-2" href="#" style="background-color:#318093; color:white"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-square" href="#" style="background-color:#318093; color:white"><i class="fab fa-instagram"></i></a>
+                        <a class="btn btn-square mr-2" href="https://twitter.com/bolivebusiness" style="background-color:#318093; color:white"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-square mr-2" href="https://www.facebook.com/bolivebusinessinter/about?locale=pa_IN" style="background-color:#318093; color:white"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-square mr-2" href="https://bj.linkedin.com/company/bolivebusinessinter?trk=public_post-text" style="background-color:#318093; color:white"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-square" href="https://www.instagram.com/bolivebusiness/" style="background-color:#318093; color:white"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>
