@@ -158,14 +158,14 @@
                                                 <span>{{ $annonce->garage ? '1' : '0' }}</span>
                                             </li>
                                             <li>
-                                                <i class="fa fa-file-alt" style="color: #318093; font-size: 24px;"
+                                                <i class="fa fa-file-alt" style="color: #318093; font-size: 18px;"
                                                     title="Titre foncier"></i>
-                                                <span>{{ $annonce->garage ? 'Oui' : 'Non' }}</span>
+                                                <span>{{ $annonce->garage ? '1' : '0' }}</span>
                                             </li>
                                             <li>
-                                                <i class="fa fa-swimming-pool" style="color: #318093; font-size: 24px;"
+                                                <i class="fa fa-swimming-pool" style="color: #318093; font-size: 18px;"
                                                     title="Piscine"></i>
-                                                <span>{{ $annonce->piscine ? 'Oui' : 'Non' }}</span>
+                                                <span>{{ $annonce->piscine ? '1' : '0' }}</span>
                                             </li>
                                         </ul>
 

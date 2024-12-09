@@ -203,12 +203,12 @@
             </div>
 
 
-            <div class="btn-group mx-1">
+           <!--  <div class="btn-group mx-1">
                 <button type="button" class="btn btn-sm btn-light d-flex align-items-center">
                     <i class="fa fa-exchange-alt" aria-hidden="true" style="font-size: 20px; color: #318093"></i>
                     <span class="ml-2" style="color: #318093">Comparer</span>
                 </button>
-            </div>
+            </div> -->
             <div class="btn-group mx-1">
                 <a href="<?php echo e(route('favoris')); ?>">
                     <button type="button" class="btn btn-sm btn-light d-flex align-items-center position-relative">
@@ -385,13 +385,13 @@
                         </button>
                     </li>
                 </a>
-                <a href="">
+              <!--  <a href="">
                     <li class="nav-item">
                         <button class="btn btn-light">
                             <i class="fa fa-exchange-alt" style="color: #318093;"></i> <span></span>
                         </button>
                     </li>
-                </a>
+                </a> -->   
                 <li class="nav-item">
                     <a href="<?php echo e(route('favoris')); ?>">
                         <button type="button"
